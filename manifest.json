@@ -1,0 +1,21 @@
+{
+  "name": "WebApp Ordini Post PROVA",
+  "short_name": "OrdiniProva",
+  "start_url": "/PANETPROVA/index.html",
+  "scope": "/PANETPROVA/",
+  "display": "standalone",
+  "background_color": "#e8f5e9",
+  "theme_color": "#2e7d32",
+  "icons": [
+    {
+      "src": "/PANETPROVA/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/PANETPROVA/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
