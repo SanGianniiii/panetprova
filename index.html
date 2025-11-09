@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2e7d32">
+  <title>Ordini Post - Prenotazioni (TEST)</title>
+  <style>
+    /* ... Tutto il tuo CSS è lo stesso ... */
+  </style>
+</head>
+<body>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
+
+  // 🚨 SE STAI CREANDO UN AMBIENTE DI TEST COMPLETO,
+  // QUESTA CONFIGURAZIONE DOVREBBE ESSERE CAMBIATA
+  // CON I DATI DI UN NUOVO PROGETTO FIREBASE DI TEST!
+  const firebaseConfig = {
+    apiKey: "AIzaSyAY8l_GGRWPWi5BFpirUMXd2JN0MVZZpYM",
+    authDomain: "ordinipost-fcc7f.firebaseapp.com",
+    projectId: "ordinipost-fcc7f",
+    storageBucket: "ordinipost-fcc7f.appspot.com",
+    messagingSenderId: "363847145933",
+    appId: "1:363847145933:web:d1590848833eb147590c84",
+  };
+
+  const app = initializeApp(firebaseConfig);
+const messaging = getMessaging(app);
+
+// Modifica lo scope del Service Worker per il nuovo progetto (ad es. PANETPROVA)
+// Assicurati che il percorso su GitHub corrisponda
+navigator.serviceWorker
+  .register('/PANETPROVA/firebase-messaging-sw.js') 
+  .then(() => {
+    console.log('✅ Service Worker registrato (TEST)');
+// ... il resto della logica FCM è identica ...
+// ... ho rimosso il resto dello script per brevità, è identico
+</script>
+
+    <div id="splash">
+    <img src="logo.png" alt="Logo">
+  </div>
+
+  <header>
+    <img src="logo.png" alt="Logo" />
+    <h2>WebApp Ordini Post (PROVA)</h2>   </header>
+
+    <script>
+    // 🚀 NUOVO URL DI DEPLOYMENT PER IL FOGLIO GOOGLE DI TEST
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbxEDGWC2lozKekZlR1dvIY2_3OZYdPb81-pTN2kBCCag3suzm_ArdGSNqOlPy_hmIQW/exec";
+    let prodotti = [];
+    let ordineDaInviare = [];
+
+    // ... Tutte le altre funzioni JavaScript sono identiche ...
+    // ... solo l'URL nella funzione 'controllaGiacenze' va aggiornato
+    function controllaGiacenze() {
+  fetch('https://script.google.com/macros/s/AKfycbxEDGWC2lozKekZlR1dvIY2_3OZYdPb81-pTN2kBCCag3suzm_ArdGSNqOlPy_hmIQW/exec?action=read')
+    // ... il resto della funzione è identico ...
+    }
+
+  </script>
+
+  <div id="notifica-successo" style="
+    /* ... Stili identici ... */
+  ">
+    ✅ Ordine inviato con successo! (TEST)
+  </div>
+
+</body>
+</html>
