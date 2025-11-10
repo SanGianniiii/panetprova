@@ -232,9 +232,23 @@
       if (salvato) document.getElementById("nome").value = salvato;
     } catch (e) {
       alert("Errore nel caricamento dei dati: " + e.message);
+    } finally {
+      // --- INIZIO CODICE AGGIUNTO ---
+      // Seleziona l'elemento splash
+      const splash = document.getElementById("splash");
+      if (splash) {
+        // Imposta l'opacità a 0 per avviare la transizione CSS
+        splash.style.opacity = "0";
+        
+        // Dopo 1 secondo (la durata della tua transizione)
+        // imposta display:none per rimuoverlo completamente
+        setTimeout(() => {
+          splash.style.display = "none";
+        }, 1000); // 1000ms = 1s (come da tuo CSS: transition: opacity 1s ease-out;)
+      }
+      // --- FINE CODICE AGGIUNTO ---
     }
   }
-
   function mostraTabella() {
     let html = "<table><tr><th>Prodotto</th><th>Disponibile</th><th>Quantità</th></tr>";
     prodotti.forEach((p, i) => {
