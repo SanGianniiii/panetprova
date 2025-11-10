@@ -1,19 +1,19 @@
 {
-  "name": "WebApp Ordini Post PROVA",
-  "short_name": "PanetProva",
+  "name": "Ordini Post - Natale",
+  "short_name": "NataleStellato",
   "start_url": "/panetprova/index.html",
   "scope": "/panetprova/",
   "display": "standalone",
-  "background_color": "#E8EAF6",
-  "theme_color": "#3F51B5",
+  "background_color": "#0a1a3f",
+  "theme_color": "#FFD700",
   "icons": [
     {
-      "src": "/panetprova/logo.png",
+      "src": "/panetprova/stella_cometa.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/panetprova/logo.png",
+      "src": "/panetprova/stella_cometa.png",
       "sizes": "512x512",
       "type": "image/png"
     }
