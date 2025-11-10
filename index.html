@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#3F51B5"> 
+  <meta name="theme-color" content="#3F51B5"> 
   <title>Ordini Post - PROVA</title>
  <style>
     /* COLORI TEMA NATIVITÀ */
@@ -78,7 +78,7 @@
       color: var(--colore-testo);
     }
     
-    /* BOTTONI (Blu Regale con testo Oro) */
+    /* BOTTONI (Blu Regale con testo Bianco) */
     button {
       background-color: var(--colore-secondario); 
       color: white;
@@ -112,22 +112,17 @@
       font-weight: bold;
     }
     
-    /* --- 
-    🔔 QUI LA CORREZIONE FONDAMENTALE 🔔
-    Abbiamo aggiunto 'display: none;' per nascondere i modali all'avvio.
-    --- 
-    */
+    /* MODALI */
     #modal {
-      display: none; /* <-- CORREZIONE: Aggiunto per nasconderlo */
+      /* Regola necessaria per mostrare il modale correttamente quando display viene cambiato in flex da JS */
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
       background: rgba(0,0,0,0.7); 
       justify-content: center;
       align-items: center;
+      z-index: 9999;
     }
-    /* NOTA: #modal-riepilogo è già nascosto tramite stile inline nell'HTML, 
-       ma questa regola assicura che #modal sia nascosto di default. */
     
     #modal-content {
       background: var(--sfondo-chiaro);
@@ -187,6 +182,7 @@
   const app = initializeApp(firebaseConfig);
   const messaging = getMessaging(app);
 
+  // 💡 ASSICURATI DI AGGIORNARE IL CACHE_NAME nel file firebase-messaging-sw.js
   navigator.serviceWorker
     .register('/panetprova/firebase-messaging-sw.js')
     .then(() => console.log('✅ Service Worker registrato'))
@@ -197,8 +193,6 @@
     alert(`📢 Notifica: ${payload.notification.title} - ${payload.notification.body}`);
   });
 </script>
-
-<div id="splash"><img src="logo.png" alt="Logo"></div>
 
 <header>
   <img src="logo.png" alt="Logo" />
@@ -223,7 +217,9 @@
 <button onclick="confermaOrdine()">Prenota</button>
 <button onclick="mostraRiepilogoPrenotazioni()">Riepilogo Prenotazioni</button>
 
-<div id="modal" style="display: none;"> 
+<div id="splash"><img src="logo.png" alt="Logo"></div>
+
+<div id="modal" style="display: none;"> 
   <div id="modal-content">
     <h3>Conferma ordine</h3>
     <pre id="riepilogoModal"></pre>
@@ -235,10 +231,10 @@
   </div>
 </div>
 
-<div id="modal-riepilogo" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;">
+<div id="modal-riepilogo" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:9999;">
   <div style="background:#fff;padding:20px;border-radius:10px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;">
     <h3>Riepilogo Prenotazioni</h3>
-        <div id="spinner-riepilogo" style="display:none;color:var(--colore-secondario);font-weight:bold;margin-bottom:1rem;">
+    <div id="spinner-riepilogo" style="display:none;color:var(--colore-secondario);font-weight:bold;margin-bottom:1rem;">
       Generazione riepilogo in corso... <span class="spinner"></span>
     </div>
     <pre id="contenuto-riepilogo" style="white-space: pre-wrap; font-family: monospace;"></pre>
@@ -247,7 +243,7 @@
 </div>
 
 <script>
-  const scriptUrl = "https://script.google.com/macros/s/AKfycbxEDGWC2lozKekZlR1dvIY2_3OZYdPb81-pTN2kBCCag3suzm_ArdGSNqOlPy_hmIQW/exec";
+  const scriptUrl = "https://script.google.com/macros/s/AKfycbxEDGWC2lozKekZl1dvIY2_3OZYdPb81-pTN2kBCCag3suzm_ArdGSNqOlPy_hmIQW/exec"; // Esempio URL
   let prodotti = [];
   let ordineDaInviare = [];
   let riepilogoCorrente = [];
@@ -261,7 +257,7 @@
 
       const salvato = localStorage.getItem("famiglia");
       if (salvato) document.getElementById("nome").value = salvato;
-_   } catch (e) {
+    } catch (e) {
       alert("Errore nel caricamento dei dati: " + e.message);
     } finally {
       const splash = document.getElementById("splash");
@@ -401,7 +397,7 @@ _   } catch (e) {
     prenotazioniAttive.forEach((item, i) => {
       const input = document.getElementById(`annulla-${i}`);
       if (input) {
-  _       const qtyDaAnnullare = parseInt(input.value) || 0;
+        const qtyDaAnnullare = parseInt(input.value) || 0;
         
         if (qtyDaAnnullare > item.valore) {
           alert(`Errore: Non puoi annullare ${qtyDaAnnullare} ${item.prodotto}, ne hai prenotati solo ${item.valore}.`);
@@ -410,9 +406,9 @@ _   } catch (e) {
 
         if (qtyDaAnnullare > 0) {
           ordineDiAnnullamento.push({
-    g         nome: nome,
+            nome: nome,
             prodotto: item.prodotto,
-code           quantita: -qtyDaAnnullare // Quantità negativa
+            quantita: -qtyDaAnnullare // Quantità negativa
           });
         }
       }
@@ -438,7 +434,6 @@ code           quantita: -qtyDaAnnullare // Quantità negativa
       });
       await res.json();
       
-      // Messaggio di successo (puoi personalizzare l'emoji)
       alert("🗑️ Annullamento registrato con successo!");
       
       document.getElementById('modal-riepilogo').style.display = "none";
