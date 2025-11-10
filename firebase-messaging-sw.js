@@ -1,4 +1,4 @@
-const CACHE_NAME = 'panetprova-v2-nativity';
+const CACHE_NAME = 'panetprova-v3-nativity';
 const urlsToCache = [
   '/panetprova/',
   '/panetprova/index.html',
