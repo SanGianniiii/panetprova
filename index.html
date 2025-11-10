@@ -7,18 +7,28 @@
   <meta name="theme-color" content="#2e7d32">
   <title>Ordini Post - PROVA</title>
   <style>
+    /* COLORI NATALIZI */
+    :root {
+      --colore-principale: #B71C1C; /* Rosso Natale */
+      --colore-secondario: #1B5E20; /* Verde Bosco */
+      --sfondo-chiaro: #FAFAFA; /* Bianco Neve */
+      --sfondo-gradiente: linear-gradient(to bottom, #FAFAFA, #E0F2F1); /* Leggero gradiente freddo */
+    }
+
     body {
       font-family: "Segoe UI", sans-serif;
-      background: linear-gradient(to right, #e8f5e9, #c8e6c9);
+      background: var(--sfondo-gradiente);
       margin: 0;
       padding: 2rem;
-      color: #2e7d32;
+      color: var(--colore-secondario); /* Testo in Verde Bosco */
     }
+    
+    /* SFONDO SPLASH (meno invasivo) */
     #splash {
       position: fixed;
       top: 0; left: 0;
       width: 100vw; height: 100vh;
-      background-color: #e8f5e9;
+      background-color: var(--sfondo-chiaro);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -29,12 +39,14 @@
     #splash img {
       width: 400px;
       height: 400px;
-      animation: fadeIn 1s ease-in-out;
+      /* Non ho modificato l'animazione fadeIn */
+      animation: fadeIn 1s ease-in-out; 
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.8); }
       to { opacity: 1; transform: scale(1); }
     }
+    
     header {
       display: flex;
       align-items: center;
@@ -49,35 +61,25 @@
     h2 {
       margin: 0;
       font-size: 2.4rem;
+      color: var(--colore-principale); /* Titolo principale in Rosso */
     }
+    h3 {
+       color: var(--colore-principale); /* Sottotitoli in Rosso */
+    }
+    
+    /* INPUT E SELECT */
     select, input[type="number"], button {
       width: 100%;
       padding: 0.7rem;
       margin-top: 1rem;
       font-size: 1rem;
       border-radius: 6px;
-      border: 1px solid #a5d6a7;
+      border: 1px solid var(--colore-principale); 
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background-color: white;
-      margin-top: 1rem;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0, 128, 0, 0.2);
-    }
-    th, td {
-      padding: 0.8rem;
-      text-align: center;
-      border-bottom: 1px solid #e0f2f1;
-    }
-    th {
-      background-color: #a5d6a7;
-      color: white;
-    }
+    
+    /* BOTTONI (Rosso acceso) */
     button {
-      background-color: #2e7d32;
+      background-color: var(--colore-principale); 
       color: white;
       border: none;
       margin-top: 1.5rem;
@@ -85,32 +87,55 @@
       transition: background 0.3s;
     }
     button:hover {
-      background-color: #1b5e20;
+      background-color: #8D0A0A; /* Rosso più scuro al passaggio */
     }
-    #modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: none;
-      justify-content: center;
-      align-items: center;
+    
+    /* TABELLA */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      margin-top: 1rem;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Ombra più definita */
+    }
+    th, td {
+      padding: 0.8rem;
+      text-align: center;
+      border-bottom: 1px solid #CFD8DC;
+    }
+    th {
+      background-color: var(--colore-secondario); /* Intestazione in Verde Bosco */
+      color: white;
+    }
+    
+    /* MODALI */
+    #modal, #modal-riepilogo {
+      /* Nessuna modifica necessaria alla posizione */
+      background: rgba(0,0,0,0.6); /* Sfondo scuro per contrasto */
     }
     #modal-content {
-      background: white;
+      background: var(--sfondo-chiaro);
       padding: 2rem;
       border-radius: 10px;
       max-width: 90%;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
     #modal-content h3 {
       margin-top: 0;
-      color: #2e7d32;
+      color: var(--colore-principale); 
     }
-    #modal-content button {
-      width: auto;
-      margin: 1rem 0.5rem 0 0;
+    
+    /* SPINNER */
+    .spinner {
+      border: 2px solid var(--colore-principale);
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
     }
+    
+    /* ALTRI STILI RESPONSIVE */
     @media (min-width: 768px) {
       select, input[type="number"], button {
         max-width: 500px;
@@ -119,23 +144,15 @@
         display: block;
       }
     }
-    .spinner {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid #2e7d32;
-      border-top: 2px solid transparent;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      vertical-align: middle;
-      margin-left: 8px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
     td input[type="number"] {
       max-width: 80px;
       box-sizing: border-box;
+      border-color: var(--colore-secondario); /* Bordo verde per input piccoli */
     }
-  </style>
+    
+    /* EFFETTO NEVE (Opzionale: richiede un contenitore) */
+    /* Se vuoi la neve che cade, devi aggiungerla come elemento body:before o su un div principale */
+</style>
 </head>
 <body>
 <script type="module">
