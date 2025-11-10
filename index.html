@@ -4,113 +4,239 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#2e7d32">
-  <title>Ordini Post - PROVA</title>
+  <meta name="theme-color" content="#FFD700">
+  <title>Ordini Post - Natale</title>
+
   <style>
+    /* === SFONDO CIELO STELLATO === */
     body {
       font-family: "Segoe UI", sans-serif;
-      background: linear-gradient(to right, #e8f5e9, #c8e6c9);
+      background: #0a1a3f url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+      background-size: cover;
       margin: 0;
       padding: 2rem;
-      color: #2e7d32;
+      color: #FFD700;
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
     }
+
+    /* Stelle scintillanti */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(255,215,0,0.4) 1px, transparent 1px),
+        radial-gradient(circle at 80% 70%, rgba(255,215,0,0.4) 1px, transparent 1px),
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.3) 1px, transparent 1px);
+      background-size: 180px 180px, 280px 280px, 130px 130px;
+      opacity: 0.7;
+      z-index: -1;
+      animation: twinkle 10s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    /* === FIOCCHI DI NEVE DORATI (ANIMATI) === */
+    .snowflake {
+      position: absolute;
+      color: #FFD700;
+      font-size: 1.2em;
+      pointer-events: none;
+      animation: fall linear infinite;
+      opacity: 0.9;
+      text-shadow: 0 0 8px rgba(255,215,0,0.6);
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* === SPLASH SCREEN === */
     #splash {
       position: fixed;
       top: 0; left: 0;
       width: 100vw; height: 100vh;
-      background-color: #e8f5e9;
+      background: linear-gradient(135deg, #0a1a3f, #1e3a8a);
+      background-image: url('https://images.unsplash.com/photo-1543589077-7c5e2bce6cd9?auto=format&fit=crop&w=1350&q=80');
+      background-size: cover;
+      background-position: center;
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 99999;
       opacity: 1;
-      transition: opacity 1s ease-out;
+      transition: opacity 1.5s ease-out;
     }
+
     #splash img {
-      width: 400px;
-      height: 400px;
-      animation: fadeIn 1s ease-in-out;
+      width: 380px;
+      height: 380px;
+      filter: drop-shadow(0 0 40px #FFD700);
+      animation: fadeInStar 2.5s ease-in-out;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.8); }
-      to { opacity: 1; transform: scale(1); }
+
+    @keyframes fadeInStar {
+      0% { opacity: 0; transform: scale(0.6) rotate(-15deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0); }
     }
+
+    /* === STELLA COMETA ANIMATA === */
+    .comet {
+      position: fixed;
+      top: 10%;
+      left: -10%;
+      font-size: 80px;
+      color: #FFD700;
+      text-shadow: 0 0 30px #FFD700, 0 0 60px #FFD700;
+      animation: cometMove 15s linear infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    @keyframes cometMove {
+      0% { left: -10%; top: 10%; opacity: 0; transform: rotate(-40deg); }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { left: 110%; top: 15%; opacity: 0; transform: rotate(20deg); }
+    }
+
+    /* === HEADER === */
     header {
       display: flex;
       align-items: center;
       gap: 1rem;
       justify-content: center;
       margin-bottom: 2rem;
+      text-align: center;
+      filter: drop-shadow(0 0 15px rgba(255,215,0,0.3));
     }
+
     header img {
-      width: 120px;
-      height: 120px;
+      width: 130px;
+      height: 130px;
+      filter: drop-shadow(0 0 20px #FFD700);
     }
-    h2 {
+
+    h2, h3 {
       margin: 0;
       font-size: 2.4rem;
+      color: #FFD700;
+      text-shadow: 0 0 15px rgba(255,215,0,0.7);
+      font-weight: bold;
+      letter-spacing: 1.5px;
     }
-    select, input[type="number"], button {
+
+    /* === INPUT E SELECT === */
+    select, input[type="number"] {
       width: 100%;
-      padding: 0.7rem;
+      padding: 0.9rem;
       margin-top: 1rem;
-      font-size: 1rem;
-      border-radius: 6px;
-      border: 1px solid #a5d6a7;
+      font-size: 1.1rem;
+      border-radius: 10px;
+      border: 2.5px solid #FFD700;
+      background: rgba(255, 255, 255, 0.97);
+      color: #0a1a3f;
+      font-weight: bold;
+      box-shadow: 0 0 12px rgba(255,215,0,0.4);
+      transition: all 0.3s ease;
     }
+
+    select:focus, input:focus {
+      outline: none;
+      box-shadow: 0 0 20px rgba(255,215,0,0.8);
+      transform: scale(1.02);
+    }
+
+    /* === TABELLA === */
     table {
       width: 100%;
       border-collapse: collapse;
-      background-color: white;
-      margin-top: 1rem;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0, 128, 0, 0.2);
-    }
-    th, td {
-      padding: 0.8rem;
-      text-align: center;
-      border-bottom: 1px solid #e0f2f1;
-    }
-    th {
-      background-color: #a5d6a7;
-      color: white;
-    }
-    button {
-      background-color: #2e7d32;
-      color: white;
-      border: none;
+      background: rgba(255, 255, 255, 0.94);
       margin-top: 1.5rem;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 6px 25px rgba(255,215,0,0.5);
+      border: 3px solid #FFD700;
+    }
+
+    th, td {
+      padding: 1.1rem;
+      text-align: center;
+      border-bottom: 1.5px solid #FFD700;
+    }
+
+    th {
+      background: #1e3a8a;
+      color: #FFD700;
       font-weight: bold;
-      transition: background 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
     }
-    button:hover {
-      background-color: #1b5e20;
+
+    td input[type="number"] {
+      max-width: 80px;
+      padding: 0.5rem;
+      border: 1.5px solid #FFD700;
+      border-radius: 6px;
+      font-weight: bold;
     }
-    #modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: none;
-      justify-content: center;
-      align-items: center;
-    }
-    #modal-content {
-      background: white;
-      padding: 2rem;
-      border-radius: 10px;
-      max-width: 90%;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    #modal-content h3 {
-      margin-top: 0;
-      color: #2e7d32;
-    }
-    #modal-content button {
-      width: auto;
+
+    /* === PULSANTI === */
+    button {
+      background: #1e3a8a;
+      color: #FFD700;
+      border: 2.5px solid #FFD700;
+      padding: 0.9rem 1.8rem;
       margin: 1rem 0.5rem 0 0;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      box-shadow: 0 0 15px rgba(255,215,0,0.5);
+      font-size: 1.1rem;
     }
+
+    button:hover {
+      background: #FFD700;
+      color: #0a1a3f;
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 0 30px rgba(255,215,0,0.9);
+    }
+
+    /* === MODALI === */
+    #modal, #modal-riepilogo {
+      background: rgba(10, 26, 63, 0.92);
+    }
+
+    #modal-content, #modal-riepilogo > div {
+      background: rgba(255, 255, 255, 0.97);
+      padding: 2.5rem;
+      border-radius: 18px;
+      max-width: 90%;
+      border: 4px solid #FFD700;
+      box-shadow: 0 0 40px rgba(255,215,0,0.7);
+    }
+
+    #modal-content h3, #modal-riepilogo h3 {
+      color: #1e3a8a;
+      text-align: center;
+      font-size: 1.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .spinner {
+      border: 4px solid #FFD700;
+      border-top: 4px solid transparent;
+    }
+
+    /* === RESPONSIVE === */
     @media (min-width: 768px) {
       select, input[type="number"], button {
         max-width: 500px;
@@ -119,323 +245,279 @@
         display: block;
       }
     }
-    .spinner {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid #2e7d32;
-      border-top: 2px solid transparent;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      vertical-align: middle;
-      margin-left: 8px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    td input[type="number"] {
-      max-width: 80px;
-      box-sizing: border-box;
-    }
   </style>
 </head>
 <body>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAY8l_GGRWPWi5BFpirUMXd2JN0MVZZpYM",
-    authDomain: "ordinipost-fcc7f.firebaseapp.com",
-    projectId: "ordinipost-fcc7f",
-    storageBucket: "ordinipost-fcc7f.appspot.com",
-    messagingSenderId: "363847145933",
-    appId: "1:363847145933:web:d1590848833eb147590c84",
-  };
+  <!-- STELLA COMETA ANIMATA -->
+  <div class="comet">✨</div>
 
-  const app = initializeApp(firebaseConfig);
-  const messaging = getMessaging(app);
+  <!-- FIOCCHI DI NEVE DORATI -->
+  <div id="snowflakes"></div>
 
-  navigator.serviceWorker
-    .register('/panetprova/firebase-messaging-sw.js')
-    .then(() => console.log('✅ Service Worker registrato'))
-    .catch(err => console.error('❌ Errore SW:', err));
+  <!-- SPLASH -->
+  <div id="splash"><img src="logo.png" alt="Logo Natale"></div>
 
-  onMessage(messaging, (payload) => {
-    console.log("📩 Messaggio ricevuto:", payload);
-    alert(`📢 Notifica: ${payload.notification.title} - ${payload.notification.body}`);
-  });
-</script>
+  <header>
+    <img src="logo.png" alt="Logo" />
+    <h2>Ordini Post - Natale</h2>
+  </header>
 
-<!-- Splash -->
-<div id="splash"><img src="logo.png" alt="Logo"></div>
+  <label for="nome">Seleziona Famiglia di Padrini:</label>
+  <select id="nome">
+    <option value="">-- Seleziona la tua Famiglia --</option>
+    <option>Carapezza</option><option>Caruso</option><option>Di Maria</option>
+    <option>Marino</option><option>Massimino</option><option>Milanese</option>
+    <option>Murabito</option><option>Nicosia</option><option>Pantellaro</option>
+    <option>Porto</option><option>Romano</option><option>Ruiz</option>
+    <option>Scala</option><option>Tanasi</option><option>Zammillo</option>
+  </select>
 
-<header>
-  <img src="logo.png" alt="Logo" />
-  <h2>WebApp Ordini Post - PROVA</h2>
-</header>
-
-<label for="nome">Seleziona Famiglia di Padrini:</label>
-<select id="nome">
-  <option value="">-- Seleziona la tua Famiglia --</option>
-  <option>Carapezza</option><option>Caruso</option><option>Di Maria</option>
-  <option>Marino</option><option>Massimino</option><option>Milanese</option>
-  <option>Murabito</option><option>Nicosia</option><option>Pantellaro</option>
-  <option>Porto</option><option>Romano</option><option>Ruiz</option>
-  <option>Scala</option><option>Tanasi</option><option>Zammillo</option>
-</select>
-
-<div id="tabella-g">
-  <h3>Disponibilità prodotti</h3>
-  <div id="prodotti"></div>
-</div>
-
-<button onclick="confermaOrdine()">Prenota</button>
-<button onclick="mostraRiepilogoPrenotazioni()">Riepilogo Prenotazioni</button>
-
-<!-- Modale -->
-<div id="modal">
-  <div id="modal-content">
-    <h3>Conferma ordine</h3>
-    <pre id="riepilogoModal"></pre>
-    <div id="messaggioAttesa" style="display:none;color:#2e7d32;font-weight:bold;">
-      ⏳ Attendi, il tuo ordine sta per essere processato... <span class="spinner"></span>
-    </div>
-    <button onclick="inviaOrdine()">Conferma</button>
-    <button onclick="chiudiModal()">Annulla</button>
+  <div id="tabella-g">
+    <h3>Disponibilità prodotti</h3>
+    <div id="prodotti"></div>
   </div>
-</div>
 
-<!-- Modal riepilogo -->
-<div id="modal-riepilogo" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;">
-  <div style="background:#fff;padding:20px;border-radius:10px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;">
-    <h3>Riepilogo Prenotazioni</h3>
-    <div id="spinner-riepilogo" style="display:none;color:#2e7d32;font-weight:bold;margin-bottom:1rem;">
-      Generazione riepilogo in corso... <span class="spinner"></span>
+  <button onclick="confermaOrdine()">Prenota</button>
+  <button onclick="mostraRiepilogoPrenotazioni()">Riepilogo Prenotazioni</button>
+
+  <!-- Modale Conferma -->
+  <div id="modal">
+    <div id="modal-content">
+      <h3>Conferma ordine</h3>
+      <pre id="riepilogoModal"></pre>
+      <div id="messaggioAttesa" style="display:none;color:#1e3a8a;font-weight:bold;">
+        Attendi, il tuo ordine sta per essere processato... <span class="spinner"></span>
+      </div>
+      <button onclick="inviaOrdine()">Conferma</button>
+      <button onclick="chiudiModal()">Annulla</button>
     </div>
-    <pre id="contenuto-riepilogo" style="white-space: pre-wrap; font-family: monospace;"></pre>
-    <button onclick="document.getElementById('modal-riepilogo').style.display='none'">Chiudi</button>
   </div>
-</div>
 
-<script>
-  const scriptUrl = "https://script.google.com/macros/s/AKfycbxEDGWC2lozKekZlR1dvIY2_3OZYdPb81-pTN2kBCCag3suzm_ArdGSNqOlPy_hmIQW/exec";
-  let prodotti = [];
-  let ordineDaInviare = [];
-  let riepilogoCorrente = [];
+  <!-- Modal Riepilogo -->
+  <div id="modal-riepilogo" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(10,26,63,0.92);justify-content:center;align-items:center;">
+    <div style="background:#fff;padding:20px;border-radius:15px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;border:4px solid #FFD700;">
+      <h3>Riepilogo Prenotazioni</h3>
+      <div id="spinner-riepilogo" style="display:none;color:#1e3a8a;font-weight:bold;margin-bottom:1rem;">
+        Generazione riepilogo... <span class="spinner"></span>
+      </div>
+      <pre id="contenuto-riepilogo" style="white-space: pre-wrap; font-family: monospace;"></pre>
+      <button onclick="document.getElementById('modal-riepilogo').style.display='none'">Chiudi</button>
+    </div>
+  </div>
 
-  async function caricaProdotti() {
-    try {
-      const res = await fetch(scriptUrl + "?action=read");
-      const data = await res.json();
-      prodotti = data;
-      mostraTabella();
-
-      const salvato = localStorage.getItem("famiglia");
-      if (salvato) document.getElementById("nome").value = salvato;
-    } catch (e) {
-      alert("Errore nel caricamento dei dati: " + e.message);
-    } finally {
-      // --- INIZIO CODICE AGGIUNTO ---
-      // Seleziona l'elemento splash
-      const splash = document.getElementById("splash");
-      if (splash) {
-        // Imposta l'opacità a 0 per avviare la transizione CSS
-        splash.style.opacity = "0";
-        
-        // Dopo 1 secondo (la durata della tua transizione)
-        // imposta display:none per rimuoverlo completamente
-        setTimeout(() => {
-          splash.style.display = "none";
-        }, 1000); // 1000ms = 1s (come da tuo CSS: transition: opacity 1s ease-out;)
-      }
-      // --- FINE CODICE AGGIUNTO ---
-    }
-  }
-  function mostraTabella() {
-    let html = "<table><tr><th>Prodotto</th><th>Disponibile</th><th>Quantità</th></tr>";
-    prodotti.forEach((p, i) => {
-      html += `<tr>
-        <td>${p.tipo}</td>
-        <td>${p.giacenza}</td>
-        <td>${p.giacenza <= 0 ? '<span style="color:red;font-weight:bold;">Sold Out</span>' :
-        `<input type="number" id="quantita-${i}" min="0" max="${p.giacenza}" />`}</td>
-      </tr>`;
+  <!-- SCRIPT FIREBASE + LOGICA -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyAY8l_GGRWPWi5BFpirUMXd2JN0MVZZpYM",
+      authDomain: "ordinipost-fcc7f.firebaseapp.com",
+      projectId: "ordinipost-fcc7f",
+      storageBucket: "ordinipost-fcc7f.appspot.com",
+      messagingSenderId: "363847145933",
+      appId: "1:363847145933:web:d1590848833eb147590c84",
+    };
+    const app = initializeApp(firebaseConfig);
+    const messaging = getMessaging(app);
+    navigator.serviceWorker.register('/panetprova/firebase-messaging-sw.js')
+      .then(() => console.log('SW registrato'))
+      .catch(err => console.error('Errore SW:', err));
+    onMessage(messaging, (payload) => {
+      alert(`Notifica: ${payload.notification.title} - ${payload.notification.body}`);
     });
-    html += "</table>";
-    document.getElementById("prodotti").innerHTML = html;
-  }
+  </script>
 
-  function confermaOrdine() {
-    const nome = document.getElementById("nome").value.trim();
-    if (!nome) return alert("Seleziona il nome della tua famiglia.");
-    localStorage.setItem("famiglia", nome);
+  <script>
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbxEDGWC2lozKekZlR1dvIY2_3OZYdPb81-pTN2kBCCag3suzm_ArdGSNqOlPy_hmIQW/exec";
+    let prodotti = [], ordineDaInviare = [], riepilogoCorrente = [];
 
-    const ordine = [];
-    for (let i = 0; i < prodotti.length; i++) {
-      const p = prodotti[i];
-      const input = document.getElementById(`quantita-${i}`);
-      if (!input) continue;
-      const qty = parseInt(input.value) || 0;
-      if (qty > p.giacenza) return alert(`Giacenza insufficiente per ${p.tipo}`);
-      if (qty > 0) ordine.push({ nome, prodotto: p.tipo, quantita: qty });
+    // FIOCCHI DI NEVE DORATI
+    function createSnowflake() {
+      const flake = document.createElement('div');
+      flake.classList.add('snowflake');
+      flake.innerHTML = '❄';
+      flake.style.left = Math.random() * 100 + 'vw';
+      flake.style.animationDuration = Math.random() * 6 + 5 + 's';
+      flake.style.fontSize = Math.random() * 1.5 + 1 + 'em';
+      document.getElementById('snowflakes').appendChild(flake);
+      setTimeout(() => flake.remove(), 11000);
     }
-    if (!ordine.length) return alert("Nessun prodotto selezionato.");
+    setInterval(createSnowflake, 300);
 
-    let riepilogo = `Famiglia: ${nome}\n\n`;
-    ordine.forEach(o => riepilogo += `- ${o.prodotto}: ${o.quantita}\n`);
-    ordineDaInviare = ordine;
-    document.getElementById("riepilogoModal").innerText = riepilogo;
-    document.getElementById("modal").style.display = "flex";
-  }
+    async function caricaProdotti() {
+      try {
+        const res = await fetch(scriptUrl + "?action=read");
+        const data = await res.json();
+        prodotti = data;
+        mostraTabella();
+        const salvato = localStorage.getItem("famiglia");
+        if (salvato) document.getElementById("nome").value = salvato;
+      } catch (e) {
+        alert("Errore caricamento: " + e.message);
+      } finally {
+        const splash = document.getElementById("splash");
+        if (splash) {
+          splash.style.opacity = "0";
+          setTimeout(() => splash.style.display = "none", 1500);
+        }
+      }
+    }
 
-  function chiudiModal() {
-    document.getElementById("modal").style.display = "none";
-    document.getElementById("messaggioAttesa").style.display = "none";
-  }
-
-  async function inviaOrdine() {
-    const attesa = document.getElementById("messaggioAttesa");
-    attesa.style.display = "block";
-    try {
-      const res = await fetch(scriptUrl, {
-        method: "POST",
-        body: JSON.stringify({ action: "prenota", ordine: ordineDaInviare })
+    function mostraTabella() {
+      let html = "<table><tr><th>Prodotto</th><th>Disponibile</th><th>Quantità</th></tr>";
+      prodotti.forEach((p, i) => {
+        html += `<tr>
+          <td>${p.tipo}</td>
+          <td>${p.giacenza}</td>
+          <td>${p.giacenza <= 0 ? '<span style="color:red;font-weight:bold;">Sold Out</span>' :
+          `<input type="number" id="quantita-${i}" min="0" max="${p.giacenza}" />`}</td>
+        </tr>`;
       });
-      await res.json();
-      alert("✅ Ordine inviato con successo!");
-      chiudiModal();
-      caricaProdotti();
-    } catch (e) {
-      alert("Errore invio ordine: " + e.message);
-    } finally {
-      attesa.style.display = "none";
+      html += "</table>";
+      document.getElementById("prodotti").innerHTML = html;
     }
-  }
 
-  async function mostraRiepilogoPrenotazioni() {
-    const nominativo = document.getElementById('nome').value.trim();
-    if (!nominativo) return alert("Seleziona prima un nominativo.");
+    function confermaOrdine() {
+      const nome = document.getElementById("nome").value.trim();
+      if (!nome) return alert("Seleziona il nome della tua famiglia.");
+      localStorage.setItem("famiglia", nome);
+      const ordine = [];
+      for (let i = 0; i < prodotti.length; i++) {
+        const p = prodotti[i];
+        const input = document.getElementById(`quantita-${i}`);
+        if (!input) continue;
+        const qty = parseInt(input.value) || 0;
+        if (qty > p.giacenza) return alert(`Giacenza insufficiente per ${p.tipo}`);
+        if (qty > 0) ordine.push({ nome, prodotto: p.tipo, quantita: qty });
+      }
+      if (!ordine.length) return alert("Nessun prodotto selezionato.");
+      let riepilogo = `Famiglia: ${nome}\n\n`;
+      ordine.forEach(o => riepilogo += `- ${o.prodotto}: ${o.quantita}\n`);
+      ordineDaInviare = ordine;
+      document.getElementById("riepilogoModal").innerText = riepilogo;
+      document.getElementById("modal").style.display = "flex";
+    }
 
-    const spinner = document.getElementById("spinner-riepilogo");
-    const contenuto = document.getElementById("contenuto-riepilogo");
-    contenuto.innerHTML = ""; // Svuota il contenuto precedente
-    spinner.style.display = "block";
-    document.getElementById('modal-riepilogo').style.display = "flex";
+    function chiudiModal() {
+      document.getElementById("modal").style.display = "none";
+      document.getElementById("messaggioAttesa").style.display = "none";
+    }
 
-    try {
-      const url = scriptUrl + "?action=riepilogo&nominativo=" + encodeURIComponent(nominativo);
-      const res = await fetch(url);
-      const data = await res.json();
-      
-      riepilogoCorrente = data; // Salva i dati per la funzione di annullamento
-      spinner.style.display = "none";
-      
-      // Filtra solo i prodotti con prenotazioni attive
-      const prenotazioniAttive = data.filter(item => item.valore > 0);
+    async function inviaOrdine() {
+      const attesa = document.getElementById("messaggioAttesa");
+      attesa.style.display = "block";
+      try {
+        const res = await fetch(scriptUrl, {
+          method: "POST",
+          body: JSON.stringify({ action: "prenota", ordine: ordineDaInviare })
+        });
+        await res.json();
+        alert("Ordine inviato con successo!");
+        chiudiModal();
+        caricaProdotti();
+      } catch (e) {
+        alert("Errore invio: " + e.message);
+      } finally {
+        attesa.style.display = "none";
+      }
+    }
 
-      if (!prenotazioniAttive.length) {
-        contenuto.innerText = `Nessuna prenotazione attiva per ${nominativo}.`;
+    async function mostraRiepilogoPrenotazioni() {
+      const nominativo = document.getElementById('nome').value.trim();
+      if (!nominativo) return alert("Seleziona prima un nominativo.");
+      const spinner = document.getElementById("spinner-riepilogo");
+      const contenuto = document.getElementById("contenuto-riepilogo");
+      contenuto.innerHTML = "";
+      spinner.style.display = "block";
+      document.getElementById('modal-riepilogo').style.display = "flex";
+      try {
+        const url = scriptUrl + "?action=riepilogo&nominativo=" + encodeURIComponent(nominativo);
+        const res = await fetch(url);
+        const data = await res.json();
+        riepilogoCorrente = data;
+        spinner.style.display = "none";
+        const prenotazioniAttive = data.filter(item => item.valore > 0);
+        if (!prenotazioniAttive.length) {
+          contenuto.innerText = `Nessuna prenotazione attiva per ${nominativo}.`;
+          return;
+        }
+        let html = `<p>Riepilogo per <strong>${nominativo}</strong>. Inserisci la quantità da annullare.</p>`;
+        html += `<table style="width:100%; text-align:center;">
+                   <tr><th>Prodotto</th><th>Prenotati</th><th>Qtà da Annullare</th></tr>`;
+        prenotazioniAttive.forEach((item, i) => {
+          html += `<tr>
+                     <td>${item.prodotto}</td>
+                     <td><strong>${item.valore}</strong></td>
+                     <td>
+                       <input type="number" id="annulla-${i}"
+                              min="0" max="${item.valore}" value="0"
+                              style="width: 70px; padding: 0.4rem; margin-top: 0;">
+                     </td>
+                   </tr>`;
+        });
+        html += `</table><br>`;
+        html += `<button id="btnConfermaAnnullamento" onclick="inviaAnnullamento()">Conferma Annullamenti</button>`;
+        contenuto.innerHTML = html;
+      } catch (err) {
+        spinner.style.display = "none";
+        contenuto.innerText = "Errore: " + err.message;
+      }
+    }
+
+    async function inviaAnnullamento() {
+      const nome = document.getElementById("nome").value.trim();
+      const btn = document.getElementById("btnConfermaAnnullamento");
+      btn.disabled = true;
+      btn.innerHTML = 'Elaborazione... <span class="spinner"></span>';
+      const ordineDiAnnullamento = [];
+      let errore = false;
+      const prenotazioniAttive = riepilogoCorrente.filter(item => item.valore > 0);
+      prenotazioniAttive.forEach((item, i) => {
+        const input = document.getElementById(`annulla-${i}`);
+        if (input) {
+          const qtyDaAnnullare = parseInt(input.value) || 0;
+          if (qtyDaAnnullare > item.valore) {
+            alert(`Errore: Non puoi annullare ${qtyDaAnnullare} ${item.prodotto}, ne hai prenotati solo ${item.valore}.`);
+            errore = true;
+          }
+          if (qtyDaAnnullare > 0) {
+            ordineDiAnnullamento.push({
+              nome: nome,
+              prodotto: item.prodotto,
+              quantita: -qtyDaAnnullare
+            });
+          }
+        }
+      });
+      if (errore) {
+        btn.disabled = false;
+        btn.innerHTML = 'Conferma Annullamenti';
         return;
       }
-
-      // Costruisci la tabella HTML interattiva
-      let html = `<p>Riepilogo per <strong>${nominativo}</strong>. Inserisci la quantità che desideri annullare.</p>`;
-      html += `<table style="width:100%; text-align:center;">
-                 <tr><th>Prodotto</th><th>Prenotati</th><th>Qtà da Annullare</th></tr>`;
-      
-      prenotazioniAttive.forEach((item, i) => {
-        // Usiamo l'indice 'i' SUI DATI FILTRATI per creare ID unici
-        html += `<tr>
-                   <td>${item.prodotto}</td>
-                   <td><strong>${item.valore}</strong></td>
-                   <td>
-                     <input type="number" id="annulla-${i}" 
-                            min="0" max="${item.valore}" value="0" 
-                            style="width: 70px; padding: 0.4rem; margin-top: 0;">
-                   </td>
-                 </tr>`;
-      });
-      
-      html += `</table><br>`;
-      // Aggiungi un nuovo pulsante per confermare gli annullamenti
-      html += `<button id="btnConfermaAnnullamento" onclick="inviaAnnullamento()">Conferma Annullamenti</button>`;
-
-      contenuto.innerHTML = html; // Usa innerHTML per renderizzare l'HTML
-
-    } catch (err) {
-      spinner.style.display = "none";
-      contenuto.innerText = "Errore: " + err.message;
-    }
-  }
-
-  async function inviaAnnullamento() {
-    const nome = document.getElementById("nome").value.trim();
-    const btn = document.getElementById("btnConfermaAnnullamento");
-    
-    // Disabilita il pulsante e mostra uno spinner
-    btn.disabled = true;
-    btn.innerHTML = 'Elaborazione... <span class="spinner"></span>';
-
-    const ordineDiAnnullamento = [];
-    let errore = false;
-
-    // Ricrea la lista delle sole prenotazioni attive per far corrispondere gli indici
-    const prenotazioniAttive = riepilogoCorrente.filter(item => item.valore > 0);
-
-    prenotazioniAttive.forEach((item, i) => {
-      const input = document.getElementById(`annulla-${i}`);
-      if (input) {
-        const qtyDaAnnullare = parseInt(input.value) || 0;
-        
-        if (qtyDaAnnullare > item.valore) {
-          alert(`Errore: Non puoi annullare ${qtyDaAnnullare} ${item.prodotto}, ne hai prenotati solo ${item.valore}.`);
-          errore = true;
-        }
-
-        if (qtyDaAnnullare > 0) {
-          ordineDiAnnullamento.push({
-            nome: nome,
-            prodotto: item.prodotto,
-            quantita: -qtyDaAnnullare // <-- QUI LA MAGIA! Quantità negativa
-          });
-        }
+      if (ordineDiAnnullamento.length === 0) {
+        alert("Nessuna quantità da annullare.");
+        btn.disabled = false;
+        btn.innerHTML = 'Conferma Annullamenti';
+        return;
       }
-    });
-
-    if (errore) {
-      btn.disabled = false;
-      btn.innerHTML = 'Conferma Annullamenti';
-      return; // Blocca l'invio se c'è stato un errore di validazione
+      try {
+        const res = await fetch(scriptUrl, {
+          method: "POST",
+          body: JSON.stringify({ action: "prenota", ordine: ordineDiAnnullamento })
+        });
+        await res.json();
+        alert("Annullamento registrato con successo!");
+        document.getElementById('modal-riepilogo').style.display = "none";
+        caricaProdotti();
+      } catch (e) {
+        alert("Errore annullamento: " + e.message);
+        btn.disabled = false;
+        btn.innerHTML = 'Conferma Annullamenti';
+      }
     }
 
-    if (ordineDiAnnullamento.length === 0) {
-      alert("Nessuna quantità da annullare inserita.");
-      btn.disabled = false;
-      btn.innerHTML = 'Conferma Annullamenti';
-      return;
-    }
-
-    // Usiamo la STESSA logica di inviaOrdine() per inviare i dati
-    try {
-      const res = await fetch(scriptUrl, {
-        method: "POST",
-        body: JSON.stringify({ action: "prenota", ordine: ordineDiAnnullamento })
-      });
-      await res.json();
-      
-      alert("✅ Annullamento registrato con successo!");
-      
-      // Chiudi il modale e ricarica la giacenza
-      document.getElementById('modal-riepilogo').style.display = "none";
-      caricaProdotti(); 
-      
-    } catch (e) {
-      alert("Errore invio annullamento: " + e.message);
-      btn.disabled = false;
-      btn.innerHTML = 'Conferma Annullamenti';
-    }
-  }
-  
-  window.onload = caricaProdotti;
-</script>
+    window.onload = caricaProdotti;
+  </script>
 </body>
 </html>
