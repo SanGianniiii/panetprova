@@ -6,13 +6,14 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#2e7d32">
   <title>Ordini Post - PROVA</title>
-  <style>
-    /* COLORI NATALIZI */
+ <style>
+    /* COLORI TEMA NATIVITÀ */
     :root {
-      --colore-principale: #B71C1C; /* Rosso Natale */
-      --colore-secondario: #1B5E20; /* Verde Bosco */
-      --sfondo-chiaro: #FAFAFA; /* Bianco Neve */
-      --sfondo-gradiente: linear-gradient(to bottom, #FAFAFA, #E0F2F1); /* Leggero gradiente freddo */
+      --colore-principale: #FFD700; /* Oro Stella Cometa */
+      --colore-secondario: #3F51B5; /* Blu Regale (cielo notte/manto) */
+      --colore-testo: #212121; /* Grigio scuro per leggibilità */
+      --sfondo-chiaro: #FAFAFA; /* Bianco/Crema leggero */
+      --sfondo-gradiente: linear-gradient(to bottom, #FAFAFA, #E8EAF6); /* Leggera transizione Blu/Bianco */
     }
 
     body {
@@ -20,15 +21,24 @@
       background: var(--sfondo-gradiente);
       margin: 0;
       padding: 2rem;
-      color: var(--colore-secondario); /* Testo in Verde Bosco */
+      color: var(--colore-testo); 
     }
     
-    /* SFONDO SPLASH (meno invasivo) */
+    /* SFONDO GROTTA/STELLA (Sostituzione Immagine) */
+    /* Se vuoi davvero un'immagine di sfondo: 
+    body { 
+        background-image: url('nome_tua_immagine_grotta.jpg'); 
+        background-size: cover; 
+        background-attachment: fixed; 
+        color: white; // Potrebbe essere necessario cambiare il colore del testo
+    } 
+    */
+    
     #splash {
       position: fixed;
       top: 0; left: 0;
       width: 100vw; height: 100vh;
-      background-color: var(--sfondo-chiaro);
+      background-color: var(--colore-secondario); /* Blu Notte/Regale */
       display: flex;
       justify-content: center;
       align-items: center;
@@ -39,7 +49,6 @@
     #splash img {
       width: 400px;
       height: 400px;
-      /* Non ho modificato l'animazione fadeIn */
       animation: fadeIn 1s ease-in-out; 
     }
     @keyframes fadeIn {
@@ -58,13 +67,14 @@
       width: 120px;
       height: 120px;
     }
-    h2 {
+    h2, h3 {
       margin: 0;
       font-size: 2.4rem;
-      color: var(--colore-principale); /* Titolo principale in Rosso */
+      color: var(--colore-principale); /* Titoli in Oro */
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Leggera ombra per l'Oro */
     }
     h3 {
-       color: var(--colore-principale); /* Sottotitoli in Rosso */
+       font-size: 1.5rem;
     }
     
     /* INPUT E SELECT */
@@ -74,12 +84,13 @@
       margin-top: 1rem;
       font-size: 1rem;
       border-radius: 6px;
-      border: 1px solid var(--colore-principale); 
+      border: 1px solid var(--colore-principale); /* Bordo Oro */
+      color: var(--colore-testo);
     }
     
-    /* BOTTONI (Rosso acceso) */
+    /* BOTTONI (Blu Regale con testo Oro) */
     button {
-      background-color: var(--colore-principale); 
+      background-color: var(--colore-secondario); 
       color: white;
       border: none;
       margin-top: 1.5rem;
@@ -87,7 +98,7 @@
       transition: background 0.3s;
     }
     button:hover {
-      background-color: #8D0A0A; /* Rosso più scuro al passaggio */
+      background-color: #303F9F; /* Blu più scuro al passaggio */
     }
     
     /* TABELLA */
@@ -98,32 +109,28 @@
       margin-top: 1rem;
       border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Ombra più definita */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
     }
     th, td {
       padding: 0.8rem;
       text-align: center;
-      border-bottom: 1px solid #CFD8DC;
+      border-bottom: 1px solid #E0E0E0;
     }
     th {
-      background-color: var(--colore-secondario); /* Intestazione in Verde Bosco */
-      color: white;
+      background-color: var(--colore-secondario); /* Intestazione in Blu Regale */
+      color: var(--colore-principale); /* Testo intestazione in Oro */
+      font-weight: bold;
     }
     
     /* MODALI */
     #modal, #modal-riepilogo {
-      /* Nessuna modifica necessaria alla posizione */
-      background: rgba(0,0,0,0.6); /* Sfondo scuro per contrasto */
+      background: rgba(0,0,0,0.7); 
     }
     #modal-content {
       background: var(--sfondo-chiaro);
-      padding: 2rem;
-      border-radius: 10px;
-      max-width: 90%;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      /* ...altri stili... */
     }
     #modal-content h3 {
-      margin-top: 0;
       color: var(--colore-principale); 
     }
     
@@ -147,11 +154,8 @@
     td input[type="number"] {
       max-width: 80px;
       box-sizing: border-box;
-      border-color: var(--colore-secondario); /* Bordo verde per input piccoli */
+      border-color: var(--colore-secondario); 
     }
-    
-    /* EFFETTO NEVE (Opzionale: richiede un contenitore) */
-    /* Se vuoi la neve che cade, devi aggiungerla come elemento body:before o su un div principale */
 </style>
 </head>
 <body>
