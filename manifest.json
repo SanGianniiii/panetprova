@@ -4,8 +4,8 @@
   "start_url": "/panetprova/index.html",
   "scope": "/panetprova/",
   "display": "standalone",
-  "background_color": "#FAFAFA",
-  "theme_color": "#B71C1C",
+  "background_color": "#E8EAF6",
+  "theme_color": "#3F51B5",
   "icons": [
     {
       "src": "/panetprova/logo.png",
