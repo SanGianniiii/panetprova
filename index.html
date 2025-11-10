@@ -223,11 +223,11 @@
 <button onclick="confermaOrdine()">Prenota</button>
 <button onclick="mostraRiepilogoPrenotazioni()">Riepilogo Prenotazioni</button>
 
-<div id="modal">
+<div id="modal" style="display: none;"> 
   <div id="modal-content">
     <h3>Conferma ordine</h3>
     <pre id="riepilogoModal"></pre>
-        <div id="messaggioAttesa" style="display:none;color:var(--colore-secondario);font-weight:bold;">
+    <div id="messaggioAttesa" style="display:none;color:var(--colore-secondario);font-weight:bold;">
       ⏳ Attendi, il tuo ordine sta per essere processato... <span class="spinner"></span>
     </div>
     <button onclick="inviaOrdine()">Conferma</button>
