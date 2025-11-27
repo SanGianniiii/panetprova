@@ -1,16 +1,17 @@
-const CACHE_NAME = 'panetprova-v25';
+const CACHE_NAME = 'panetprova-v26';
 const urlsToCache = [
   '/panetprova/',
   '/panetprova/index.html',
   '/panetprova/logo.png',
-  '/panetprova/manifest.json'
+  '/panetprova/manifest.json',
+  '/panetprova/jhs.mp4'
 ];
 
 self.addEventListener('install', function(e) {
   console.log('[SW] Installazione Service Worker');
   e.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      console.log('[SW] Caching assets');
+      console.log('[SW] Caching assets compreso il video');
       return cache.addAll(urlsToCache);
     })
   );
