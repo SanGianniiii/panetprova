@@ -227,7 +227,7 @@
   let ordineDaInviare = [];
   let riepilogoCorrente = [];
 
-  async function caricaProdotti() {
+ async function caricaProdotti() {
     try {
       const res = await fetch(scriptUrl + "?action=read");
       const data = await res.json();
@@ -242,10 +242,18 @@
       // Gestione Splash Screen con Video
       const splash = document.getElementById("splash");
       if (splash) {
-        splash.style.opacity = "0";
+        // TEMPO AGGIUNTIVO PER LA VISUALIZZAZIONE DEL VIDEO (3000ms = 3 secondi)
+        const delayBeforeFadeOut = 6000; 
+
         setTimeout(() => {
-          splash.style.display = "none";
-        }, 1000); 
+            splash.style.opacity = "0"; // Inizia la dissolvenza (dura 1s grazie al CSS)
+            
+            // Rimuove l'elemento dopo la fine della dissolvenza (1000ms)
+            setTimeout(() => {
+                splash.style.display = "none";
+            }, 1000); 
+            
+        }, delayBeforeFadeOut);
       }
     }
   }
