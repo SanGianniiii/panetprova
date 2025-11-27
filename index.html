@@ -26,9 +26,12 @@
       opacity: 1;
       transition: opacity 1s ease-out;
     }
-    #splash img {
-      width: 400px;
-      height: 400px;
+    /* MODIFICA PER IL VIDEO */
+    #splash video {
+      width: 100%;
+      max-width: 500px; /* Regola la grandezza massima */
+      height: auto;
+      border-radius: 15px; /* Un po' di bordo arrotondato per eleganza */
       animation: fadeIn 1s ease-in-out;
     }
     @keyframes fadeIn {
@@ -165,8 +168,12 @@
   });
 </script>
 
-<!-- Splash -->
-<div id="splash"><img src="logo.png" alt="Logo"></div>
+<div id="splash">
+    <video autoplay muted loop playsinline>
+        <source src="jhs.mp4" type="video/mp4">
+        <img src="logo.png" alt="Logo"> 
+    </video>
+</div>
 
 <header>
   <img src="logo.png" alt="Logo" />
@@ -191,7 +198,6 @@
 <button onclick="confermaOrdine()">Prenota</button>
 <button onclick="mostraRiepilogoPrenotazioni()">Riepilogo Prenotazioni</button>
 
-<!-- Modale -->
 <div id="modal">
   <div id="modal-content">
     <h3>Conferma ordine</h3>
@@ -204,7 +210,6 @@
   </div>
 </div>
 
-<!-- Modal riepilogo -->
 <div id="modal-riepilogo" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;">
   <div style="background:#fff;padding:20px;border-radius:10px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;">
     <h3>Riepilogo Prenotazioni</h3>
@@ -234,22 +239,17 @@
     } catch (e) {
       alert("Errore nel caricamento dei dati: " + e.message);
     } finally {
-      // --- INIZIO CODICE AGGIUNTO ---
-      // Seleziona l'elemento splash
+      // Gestione Splash Screen con Video
       const splash = document.getElementById("splash");
       if (splash) {
-        // Imposta l'opacità a 0 per avviare la transizione CSS
         splash.style.opacity = "0";
-        
-        // Dopo 1 secondo (la durata della tua transizione)
-        // imposta display:none per rimuoverlo completamente
         setTimeout(() => {
           splash.style.display = "none";
-        }, 1000); // 1000ms = 1s (come da tuo CSS: transition: opacity 1s ease-out;)
+        }, 1000); 
       }
-      // --- FINE CODICE AGGIUNTO ---
     }
   }
+
   function mostraTabella() {
     let html = "<table><tr><th>Prodotto</th><th>Disponibile</th><th>Quantità</th></tr>";
     prodotti.forEach((p, i) => {
@@ -317,7 +317,7 @@
 
     const spinner = document.getElementById("spinner-riepilogo");
     const contenuto = document.getElementById("contenuto-riepilogo");
-    contenuto.innerHTML = ""; // Svuota il contenuto precedente
+    contenuto.innerHTML = ""; 
     spinner.style.display = "block";
     document.getElementById('modal-riepilogo').style.display = "flex";
 
@@ -326,10 +326,9 @@
       const res = await fetch(url);
       const data = await res.json();
       
-      riepilogoCorrente = data; // Salva i dati per la funzione di annullamento
+      riepilogoCorrente = data;
       spinner.style.display = "none";
       
-      // Filtra solo i prodotti con prenotazioni attive
       const prenotazioniAttive = data.filter(item => item.valore > 0);
 
       if (!prenotazioniAttive.length) {
@@ -337,13 +336,11 @@
         return;
       }
 
-      // Costruisci la tabella HTML interattiva
       let html = `<p>Riepilogo per <strong>${nominativo}</strong>. Inserisci la quantità che desideri annullare.</p>`;
       html += `<table style="width:100%; text-align:center;">
-                 <tr><th>Prodotto</th><th>Prenotati</th><th>Qtà da Annullare</th></tr>`;
+                  <tr><th>Prodotto</th><th>Prenotati</th><th>Qtà da Annullare</th></tr>`;
       
       prenotazioniAttive.forEach((item, i) => {
-        // Usiamo l'indice 'i' SUI DATI FILTRATI per creare ID unici
         html += `<tr>
                    <td>${item.prodotto}</td>
                    <td><strong>${item.valore}</strong></td>
@@ -356,10 +353,9 @@
       });
       
       html += `</table><br>`;
-      // Aggiungi un nuovo pulsante per confermare gli annullamenti
       html += `<button id="btnConfermaAnnullamento" onclick="inviaAnnullamento()">Conferma Annullamenti</button>`;
 
-      contenuto.innerHTML = html; // Usa innerHTML per renderizzare l'HTML
+      contenuto.innerHTML = html;
 
     } catch (err) {
       spinner.style.display = "none";
@@ -371,14 +367,12 @@
     const nome = document.getElementById("nome").value.trim();
     const btn = document.getElementById("btnConfermaAnnullamento");
     
-    // Disabilita il pulsante e mostra uno spinner
     btn.disabled = true;
     btn.innerHTML = 'Elaborazione... <span class="spinner"></span>';
 
     const ordineDiAnnullamento = [];
     let errore = false;
 
-    // Ricrea la lista delle sole prenotazioni attive per far corrispondere gli indici
     const prenotazioniAttive = riepilogoCorrente.filter(item => item.valore > 0);
 
     prenotazioniAttive.forEach((item, i) => {
@@ -395,7 +389,7 @@
           ordineDiAnnullamento.push({
             nome: nome,
             prodotto: item.prodotto,
-            quantita: -qtyDaAnnullare // <-- QUI LA MAGIA! Quantità negativa
+            quantita: -qtyDaAnnullare
           });
         }
       }
@@ -404,7 +398,7 @@
     if (errore) {
       btn.disabled = false;
       btn.innerHTML = 'Conferma Annullamenti';
-      return; // Blocca l'invio se c'è stato un errore di validazione
+      return;
     }
 
     if (ordineDiAnnullamento.length === 0) {
@@ -414,7 +408,6 @@
       return;
     }
 
-    // Usiamo la STESSA logica di inviaOrdine() per inviare i dati
     try {
       const res = await fetch(scriptUrl, {
         method: "POST",
@@ -424,7 +417,6 @@
       
       alert("✅ Annullamento registrato con successo!");
       
-      // Chiudi il modale e ricarica la giacenza
       document.getElementById('modal-riepilogo').style.display = "none";
       caricaProdotti(); 
       
