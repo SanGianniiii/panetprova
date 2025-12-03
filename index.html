@@ -258,43 +258,90 @@
     }
   }
 
-  function mostraTabella() {
-    let html = "<table><tr><th>Prodotto</th><th>Disponibile</th><th>Quantità</th></tr>";
-    prodotti.forEach((p, i) => {
-      html += `<tr>
-        <td>${p.tipo}</td>
-        <td>${p.giacenza}</td>
-        <td>${p.giacenza <= 0 ? '<span style="color:red;font-weight:bold;">Sold Out</span>' :
-        `<input type="number" id="quantita-${i}" min="0" max="${p.giacenza}" />`}</td>
-      </tr>`;
-    });
-    html += "</table>";
-    document.getElementById("prodotti").innerHTML = html;
-  }
+ function mostraTabella() {
+  let html = "<table><tr><th>Prodotto</th><th>Disponibile</th><th>Quantità</th><th>Nota</th></tr>"; 
+  prodotti.forEach((p, i) => {
+    html += `<tr>
+                <td>${p.tipo}</td>
+                <td>${p.giacenza}</td>
+                <td>${
+                  p.giacenza <= 0
+                    ? '<span style="color:red; font-weight:bold;">Sold Out</span>'
+                    : `<input type="number" id="quantita-${i}" min="0" max="${p.giacenza}" />`
+                }</td>
+                <td> 
+                  <input type="text" id="nota-${i}" placeholder="Esempio: Senza lattosio" style="max-width: 150px; margin: 0; padding: 0.5rem;" />
+                </td> 
+              </tr>`;
+  });
+  html += "</table>";
+  document.getElementById("prodotti").innerHTML = html;
+}
 
-  function confermaOrdine() {
-    const nome = document.getElementById("nome").value.trim();
-    if (!nome) return alert("Seleziona il nome della tua famiglia.");
-    localStorage.setItem("famiglia", nome);
+ function confermaOrdine() {
+  const nome = document.getElementById("nome").value.trim();
+  if (!nome) return alert("Seleziona il nome della tua famiglia.");
 
-    const ordine = [];
-    for (let i = 0; i < prodotti.length; i++) {
-      const p = prodotti[i];
-      const input = document.getElementById(`quantita-${i}`);
-      if (!input) continue;
-      const qty = parseInt(input.value) || 0;
-      if (qty > p.giacenza) return alert(`Giacenza insufficiente per ${p.tipo}`);
-      if (qty > 0) ordine.push({ nome, prodotto: p.tipo, quantita: qty });
+  localStorage.setItem("famiglia", nome);
+
+  const ordine = [];
+  for (let i = 0; i < prodotti.length; i++) {
+    const p = prodotti[i];
+    const input = document.getElementById(`quantita-${i}`);
+    
+    // NUOVO: Seleziona anche l'input della nota
+    const inputNota = document.getElementById(`nota-${i}`); 
+    
+    if (!input) continue;
+
+    const qty = parseInt(input.value) || 0;
+    
+    // NUOVO: Ottieni la nota (trimma gli spazi, usa stringa vuota se non c'è nulla)
+    const nota = inputNota ? inputNota.value.trim() : ""; 
+
+    if (qty > p.giacenza) {
+      alert(`Attenzione: la giacenza del prodotto "${p.tipo}" è inferiore alla richiesta, modificalo.`);
+      return;
     }
-    if (!ordine.length) return alert("Nessun prodotto selezionato.");
 
-    let riepilogo = `Famiglia: ${nome}\n\n`;
-    ordine.forEach(o => riepilogo += `- ${o.prodotto}: ${o.quantita}\n`);
-    ordineDaInviare = ordine;
-    document.getElementById("riepilogoModal").innerText = riepilogo;
-    document.getElementById("modal").style.display = "flex";
+    if (qty > 0) {
+      ordine.push({ 
+        nome, 
+        prodotto: p.tipo, 
+        quantita: qty,
+        nota: nota // NUOVO: Aggiungi la nota all'oggetto ordine
+      });
+    }
   }
 
+  if (ordine.length === 0) return alert("Nessun prodotto selezionato.");
+
+  // Aggiorna il riepilogo nel modal per includere la nota
+  let riepilogo = `Famiglia: ${nome}\n\n`;
+  ordine.forEach(o => {
+    let riga = `- ${o.prodotto}: ${o.quantita}`;
+    if (o.nota) { // Mostra la nota solo se è stata inserita
+        riga += ` (Nota: ${o.nota})`;
+    }
+    riepilogo += riga + '\n';
+  });
+
+  ordineDaInviare = ordine;
+  document.getElementById("riepilogoModal").innerText = riepilogo;
+
+  const confermaBtn = document.querySelector('#modal-content button:nth-child(4)');
+  const annullaBtn = document.querySelector('#modal-content button:nth-child(5)');
+
+  if (confermaBtn) {
+    confermaBtn.style.display = "inline-block";
+    confermaBtn.disabled = false;
+  }
+  if (annullaBtn) {
+    annullaBtn.style.display = "inline-block";
+  }
+
+  document.getElementById("modal").style.display = "flex";
+}
   function chiudiModal() {
     document.getElementById("modal").style.display = "none";
     document.getElementById("messaggioAttesa").style.display = "none";
