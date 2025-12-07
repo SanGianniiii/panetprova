@@ -190,7 +190,7 @@
   const messaging = getMessaging(app);
 
   navigator.serviceWorker
-    .register('/panetprova/firebase-messaging-sw.js')
+    .register('firebase-messaging-sw.js')
     .then(() => console.log('✅ Service Worker registrato'))
     .catch(err => console.error('❌ Errore SW:', err));
 
