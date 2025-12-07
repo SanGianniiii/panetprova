@@ -197,6 +197,7 @@
 
 <button onclick="confermaOrdine()">Prenota</button>
 <button onclick="mostraRiepilogoPrenotazioni()">Riepilogo Prenotazioni</button>
+<button onclick="mostraDettaglioPerPersone()" style="margin-top: 0.5rem; background-color: #0a1a3f;">Vedi Dettaglio per Persone</button>
 
 <div id="modal">
   <div id="modal-content">
@@ -221,6 +222,17 @@
   </div>
 </div>
 
+  <div id="modal-dettaglio-persone" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center; z-index: 10000;">
+  <div style="background:#fff;padding:20px;border-radius:10px;max-width:800px;width:90%;max-height:90vh;overflow-y:auto;">
+    <h3>Dettaglio Ordini per Persona</h3>
+    <div id="spinner-dettaglio" style="display:none;color:#2e7d32;font-weight:bold;margin-bottom:1rem;">
+      Caricamento dettaglio in corso... <span class="spinner"></span>
+    </div>
+    <div id="contenuto-dettaglio" style="white-space: pre-wrap; font-family: 'Segoe UI', sans-serif;"></div>
+    <button onclick="document.getElementById('modal-dettaglio-persone').style.display='none'" style="margin-top: 1rem;">Chiudi</button>
+  </div>
+</div>
+  
 <script>
   const scriptUrl = "https://script.google.com/macros/s/AKfycbxEDGWC2lozKekZlR1dvIY2_3OZYdPb81-pTN2kBCCag3suzm_ArdGSNqOlPy_hmIQW/exec";
   let prodotti = [];
@@ -367,120 +379,188 @@
   }
 
   async function mostraRiepilogoPrenotazioni() {
-    const nominativo = document.getElementById('nome').value.trim();
-    if (!nominativo) return alert("Seleziona prima un nominativo.");
+    const nominativo = document.getElementById('nome').value.trim();
+    if (!nominativo) return alert("Seleziona prima un nominativo.");
 
-    const spinner = document.getElementById("spinner-riepilogo");
-    const contenuto = document.getElementById("contenuto-riepilogo");
-    contenuto.innerHTML = ""; 
-    spinner.style.display = "block";
-    document.getElementById('modal-riepilogo').style.display = "flex";
+    const spinner = document.getElementById("spinner-riepilogo");
+    const contenuto = document.getElementById("contenuto-riepilogo");
+    contenuto.innerHTML = ""; 
+    spinner.style.display = "block";
+    document.getElementById('modal-riepilogo').style.display = "flex";
 
-    try {
-      const url = scriptUrl + "?action=riepilogo&nominativo=" + encodeURIComponent(nominativo);
-      const res = await fetch(url);
-      const data = await res.json();
-      
-      riepilogoCorrente = data;
-      spinner.style.display = "none";
-      
-      const prenotazioniAttive = data.filter(item => item.valore > 0);
+    try {
+      const url = scriptUrl + "?action=riepilogo&nominativo=" + encodeURIComponent(nominativo);
+      const res = await fetch(url);
+      const data = await res.json();
+      
+      riepilogoCorrente = data;
+      spinner.style.display = "none";
+      
+      const prenotazioniAttive = data.filter(item => item.valore > 0);
 
-      if (!prenotazioniAttive.length) {
-        contenuto.innerText = `Nessuna prenotazione attiva per ${nominativo}.`;
-        return;
-      }
+      if (!prenotazioniAttive.length) {
+        contenuto.innerText = `Nessuna prenotazione attiva per ${nominativo}.`;
+        return;
+      }
 
-      let html = `<p>Riepilogo per <strong>${nominativo}</strong>. Inserisci la quantità che desideri annullare.</p>`;
-      html += `<table style="width:100%; text-align:center;">
-                  <tr><th>Prodotto</th><th>Prenotati</th><th>Qtà da Annullare</th></tr>`;
-      
-      prenotazioniAttive.forEach((item, i) => {
-        html += `<tr>
-                   <td>${item.prodotto}</td>
-                   <td><strong>${item.valore}</strong></td>
-                   <td>
-                     <input type="number" id="annulla-${i}" 
-                            min="0" max="${item.valore}" value="0" 
-                            style="width: 70px; padding: 0.4rem; margin-top: 0;">
-                   </td>
-                 </tr>`;
-      });
-      
-      html += `</table><br>`;
-      html += `<button id="btnConfermaAnnullamento" onclick="inviaAnnullamento()">Conferma Annullamenti</button>`;
+      // MODIFICA: Inclusione del campo Nota Annullamento
+      let html = `<p>Riepilogo per <strong>${nominativo}</strong>. Inserisci la quantità che desideri annullare.</p>`;
+      html += `<div style="margin-bottom: 1.5rem;">
+                <label for="notaAnnullamento" style="display:block; margin-bottom: 0.5rem; font-weight: bold;">Nota per l'Annullamento (Opzionale):</label>
+                <input type="text" id="notaAnnullamento" placeholder="Motivo o dettaglio dell'annullamento" style="width: 100%; max-width: 100%; padding: 0.7rem; margin-top: 0;"/>
+              </div>`;
+      // Fine Modifica
 
-      contenuto.innerHTML = html;
+      html += `<table style="width:100%; text-align:center;">
+                  <tr><th>Prodotto</th><th>Prenotati</th><th>Qtà da Annullare</th></tr>`;
+      
+      prenotazioniAttive.forEach((item, i) => {
+        html += `<tr>
+                   <td>${item.prodotto}</td>
+                   <td><strong>${item.valore}</strong></td>
+                   <td>
+                     <input type="number" id="annulla-${i}" 
+                            min="0" max="${item.valore}" value="0" 
+                            style="width: 70px; padding: 0.4rem; margin-top: 0;">
+                   </td>
+                 </tr>`;
+      });
+      
+      html += `</table><br>`;
+      html += `<button id="btnConfermaAnnullamento" onclick="inviaAnnullamento()">Conferma Annullamenti</button>`;
 
-    } catch (err) {
-      spinner.style.display = "none";
-      contenuto.innerText = "Errore: " + err.message;
-    }
-  }
+      contenuto.innerHTML = html;
+
+    } catch (err) {
+      spinner.style.display = "none";
+      contenuto.innerText = "Errore: " + err.message;
+    }
+  }
 
   async function inviaAnnullamento() {
-    const nome = document.getElementById("nome").value.trim();
-    const btn = document.getElementById("btnConfermaAnnullamento");
-    
-    btn.disabled = true;
-    btn.innerHTML = 'Elaborazione... <span class="spinner"></span>';
+    const nome = document.getElementById("nome").value.trim();
+    const btn = document.getElementById("btnConfermaAnnullamento");
+    
+    // NUOVO: Cattura la nota generale per l'annullamento
+    const notaAnnullamento = document.getElementById("notaAnnullamento").value.trim();
+    
+    btn.disabled = true;
+    btn.innerHTML = 'Elaborazione... <span class="spinner"></span>';
 
-    const ordineDiAnnullamento = [];
-    let errore = false;
+    const ordineDiAnnullamento = [];
+    let errore = false;
 
-    const prenotazioniAttive = riepilogoCorrente.filter(item => item.valore > 0);
+    const prenotazioniAttive = riepilogoCorrente.filter(item => item.valore > 0);
 
-    prenotazioniAttive.forEach((item, i) => {
-      const input = document.getElementById(`annulla-${i}`);
-      if (input) {
-        const qtyDaAnnullare = parseInt(input.value) || 0;
-        
-        if (qtyDaAnnullare > item.valore) {
-          alert(`Errore: Non puoi annullare ${qtyDaAnnullare} ${item.prodotto}, ne hai prenotati solo ${item.valore}.`);
-          errore = true;
-        }
+    prenotazioniAttive.forEach((item, i) => {
+      const input = document.getElementById(`annulla-${i}`);
+      if (input) {
+        const qtyDaAnnullare = parseInt(input.value) || 0;
+        
+        if (qtyDaAnnullare > item.valore) {
+          alert(`Errore: Non puoi annullare ${qtyDaAnnullare} ${item.prodotto}, ne hai prenotati solo ${item.valore}.`);
+          errore = true;
+        }
 
-        if (qtyDaAnnullare > 0) {
-          ordineDiAnnullamento.push({
-            nome: nome,
-            prodotto: item.prodotto,
-            quantita: -qtyDaAnnullare
-          });
-        }
-      }
-    });
+        if (qtyDaAnnullare > 0) {
+          ordineDiAnnullamento.push({
+            nome: nome,
+            prodotto: item.prodotto,
+            quantita: -qtyDaAnnullare,
+            nota: notaAnnullamento // MODIFICA: Aggiunto il campo nota
+          });
+        }
+      }
+    });
 
-    if (errore) {
-      btn.disabled = false;
-      btn.innerHTML = 'Conferma Annullamenti';
-      return;
-    }
+    if (errore) {
+      btn.disabled = false;
+      btn.innerHTML = 'Conferma Annullamenti';
+      return;
+    }
 
-    if (ordineDiAnnullamento.length === 0) {
-      alert("Nessuna quantità da annullare inserita.");
-      btn.disabled = false;
-      btn.innerHTML = 'Conferma Annullamenti';
-      return;
-    }
+    if (ordineDiAnnullamento.length === 0) {
+      alert("Nessuna quantità da annullare inserita.");
+      btn.disabled = false;
+      btn.innerHTML = 'Conferma Annullamenti';
+      return;
+    }
 
-    try {
-      const res = await fetch(scriptUrl, {
-        method: "POST",
-        body: JSON.stringify({ action: "prenota", ordine: ordineDiAnnullamento })
-      });
-      await res.json();
-      
-      alert("✅ Annullamento registrato con successo!");
-      
-      document.getElementById('modal-riepilogo').style.display = "none";
-      caricaProdotti(); 
-      
-    } catch (e) {
-      alert("Errore invio annullamento: " + e.message);
-      btn.disabled = false;
-      btn.innerHTML = 'Conferma Annullamenti';
-    }
-  }
+    try {
+      const res = await fetch(scriptUrl, {
+        method: "POST",
+        body: JSON.stringify({ action: "prenota", ordine: ordineDiAnnullamento })
+      });
+      await res.json();
+      
+      alert("✅ Annullamento registrato con successo!");
+      
+      document.getElementById('modal-riepilogo').style.display = "none";
+      caricaProdotti(); 
+      
+    } catch (e) {
+      alert("Errore invio annullamento: " + e.message);
+      btn.disabled = false;
+      btn.innerHTML = 'Conferma Annullamenti';
+    }
+  }
+
+  async function mostraDettaglioPerPersone() {
+    const nominativo = document.getElementById('nome').value.trim();
+    if (!nominativo) return alert("Seleziona prima un nominativo.");
+
+    const spinner = document.getElementById("spinner-dettaglio");
+    const contenuto = document.getElementById("contenuto-dettaglio");
+    const modal = document.getElementById('modal-dettaglio-persone');
+    
+    contenuto.innerHTML = ""; 
+    spinner.style.display = "block";
+    modal.style.display = "flex";
+
+    try {
+        // Chiama la nuova action in Google App Script
+        const url = scriptUrl + "?action=dettaglio&nominativo=" + encodeURIComponent(nominativo);
+        const res = await fetch(url);
+        const dettaglioFamiglia = await res.json();
+        
+        spinner.style.display = "none";
+        
+        if (!dettaglioFamiglia.length) {
+            contenuto.innerText = `Nessun ordine consolidato trovato nel foglio "dettaglio" per la famiglia ${nominativo}.`;
+            return;
+        }
+
+        let html = `<h4>Riepilogo consolidato (per persona) per <strong>${nominativo}</strong>:</h4>`;
+
+        // Mostra un riepilogo per ogni persona della famiglia
+        dettaglioFamiglia.forEach((persona) => {
+            const nomePersona = persona.nominativo;
+            html += `<div style="margin-top:1.5rem; padding: 1rem; border: 1px solid #e0f2f1; border-radius: 5px;">`;
+            html += `<h5>👤 ${nomePersona}</h5>`;
+            
+            // Crea una tabella solo per i prodotti di questa persona
+            html += `<table style="width:100%; margin-top:0.5rem; text-align:center;">
+                        <tr><th>Prodotto</th><th>Quantità</th></tr>`;
+            
+            // Itera sui prodotti prenotati (tutte le chiavi tranne 'nominativo')
+            Object.keys(persona).forEach(key => {
+                if (key !== 'nominativo') {
+                    html += `<tr>
+                            <td>${key}</td>
+                            <td><strong>${persona[key]}</strong></td>
+                         </tr>`;
+                }
+            });
+            html += `</table></div>`;
+        });
+        
+        contenuto.innerHTML = html;
+
+    } catch (err) {
+        spinner.style.display = "none";
+        contenuto.innerText = "Errore nel caricamento del dettaglio: " + err.message;
+    }
+  }
   
   window.onload = caricaProdotti;
 </script>
