@@ -4,6 +4,7 @@ const urlsToCache = [
   '/panetprova/index.html',
   '/panetprova/logo.png',
   '/panetprova/manifest.json',
+  '/panetprova/jhs.mp4,
 ];
 
 self.addEventListener('install', function(e) {
