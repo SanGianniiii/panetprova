@@ -1,10 +1,10 @@
-const CACHE_NAME = 'panetprova-v8520';
+const CACHE_NAME = 'panetprova-v52';
 const urlsToCache = [
   '/panetprova/',
   '/panetprova/index.html',
   '/panetprova/logo.png',
   '/panetprova/manifest.json',
-  '/panetprova/jhs.mp4',
+  '/panetprova/jhs.mp4'
 ];
 
 self.addEventListener('install', function(e) {
