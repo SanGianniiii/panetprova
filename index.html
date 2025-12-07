@@ -6,171 +6,139 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#FFD700">
   <title>Versione Beta</title>
- <style>
-    body {
-      font-family: "Segoe UI", sans-serif;
-      background: linear-gradient(to right, #e8f5e9, #0a1a3f);
-      margin: 0;
-      padding: 2rem;
-      color: #2e7d32;
-    }
-    /* STILI MODAL DETTAGLIO/RIEPILOGO */
-    #modal-riepilogo > div, #modal-dettaglio-persone > div {
-      max-height: 80vh;
-      overflow-y: auto;
-    }
-    /* Rimuove lo spazio extra sotto l'intestazione del riepilogo/dettaglio */
-    #contenuto-riepilogo p, #contenuto-dettaglio h4 {
-      margin-top: 0.5rem;
-      margin-bottom: 0.8rem; 
-    }
-    /* Stile per il blocco di dettaglio di una singola persona */
-    .dettaglio-persona {
-      margin-top: 1rem; /* Ridotto */
-      padding: 0.8rem; /* Ridotto */
-      border: 1px solid #a5d6a7;
-      border-radius: 5px;
-    }
-    .dettaglio-persona h5 {
-      margin-top: 0;
-      margin-bottom: 0.5rem;
-      font-size: 1.4rem; /* Aumentato per maggiore enfasi */
-      color: #0a1a3f;
-    }
-    /* Fine STILI MODAL DETTAGLIO/RIEPILOGO */
-    #splash {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background-color: #0a1a3f;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 99999;
-      opacity: 1;
-      transition: opacity 1s ease-out;
-    }
-    /* MODIFICA PER IL VIDEO */
-    #splash video {
-      width: 100%;
-      max-width: 500px; /* Regola la grandezza massima */
-      height: auto;
-      border-radius: 15px; /* Un po' di bordo arrotondato per eleganza */
-      animation: fadeIn 1s ease-in-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.8); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      justify-content: center;
-      margin-bottom: 2rem;
-    }
-    header img {
-      width: 120px;
-      height: 120px;
-    }
-    h2 {
-      margin: 0;
-      font-size: 2.4rem;
-    }
-    select, input[type="number"], input[type="text"], button {
-      width: 100%;
-      padding: 0.7rem;
-      margin-top: 1rem;
-      font-size: 1rem;
-      border-radius: 6px;
-      border: 1px solid #a5d6a7;
-      box-sizing: border-box; /* Assicura che padding e border non aumentino la larghezza */
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background-color: white;
-      margin-top: 1rem;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0, 128, 0, 0.2);
-    }
-    th, td {
-      padding: 0.8rem;
-      text-align: center;
-      border-bottom: 1px solid #e0f2f1;
-    }
-    th {
-      background-color: #a5d6a7;
-      color: white;
-    }
-    button {
-      background-color: #2e7d32;
-      color: white;
-      border: none;
-      margin-top: 1.5rem;
-      font-weight: bold;
-      transition: background 0.3s;
-    }
-    button:hover {
-      background-color: #1b5e20;
-    }
-    #modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: none;
-      justify-content: center;
-      align-items: center;
-    }
-    #modal-content {
-      background: white;
-      padding: 2rem;
-      border-radius: 10px;
-      max-width: 90%;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    #modal-content h3 {
-      margin-top: 0;
-      color: #2e7d32;
-    }
-    /* Stili per i pulsanti all'interno dei modal */
-    #modal-content button, #modal-riepilogo button, #modal-dettaglio-persone button {
-      width: auto;
-      margin: 1rem 0 0 0; 
-      flex-grow: 1;
-    }
-    @media (min-width: 768px) {
-      select, input[type="number"], button {
-        max-width: 500px;
-        margin-left: auto;
-        margin-right: auto;
-        display: block;
-      }
-    }
-    .spinner {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid #2e7d32;
-      border-top: 2px solid transparent;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      vertical-align: middle;
-      margin-left: 8px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    td input[type="number"], td input[type="text"] {
-      max-width: 80px;
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0.4rem;
-    }
-    td input[type="text"] {
-      max-width: 120px;
-    }
-  </style>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(to right, #e8f5e9, #0a1a3f);
+      margin: 0;
+      padding: 2rem;
+      color: #2e7d32;
+    }
+    #splash {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-color: #0a1a3f;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+      opacity: 1;
+      transition: opacity 1s ease-out;
+    }
+    /* MODIFICA PER IL VIDEO */
+    #splash video {
+      width: 100%;
+      max-width: 500px; /* Regola la grandezza massima */
+      height: auto;
+      border-radius: 15px; /* Un po' di bordo arrotondato per eleganza */
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    header img {
+      width: 120px;
+      height: 120px;
+    }
+    h2 {
+      margin: 0;
+      font-size: 2.4rem;
+    }
+    select, input[type="number"], button {
+      width: 100%;
+      padding: 0.7rem;
+      margin-top: 1rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #a5d6a7;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      margin-top: 1rem;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0, 128, 0, 0.2);
+    }
+    th, td {
+      padding: 0.8rem;
+      text-align: center;
+      border-bottom: 1px solid #e0f2f1;
+    }
+    th {
+      background-color: #a5d6a7;
+      color: white;
+    }
+    button {
+      background-color: #2e7d32;
+      color: white;
+      border: none;
+      margin-top: 1.5rem;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #1b5e20;
+    }
+    #modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+    #modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 90%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    #modal-content h3 {
+      margin-top: 0;
+      color: #2e7d32;
+    }
+    #modal-content button {
+      width: auto;
+      margin: 1rem 0.5rem 0 0;
+    }
+    @media (min-width: 768px) {
+      select, input[type="number"], button {
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+      }
+    }
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #2e7d32;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    td input[type="number"] {
+      max-width: 80px;
+      box-sizing: border-box;
+    }
+  </style>
 </head>
 <body>
 <script type="module">
