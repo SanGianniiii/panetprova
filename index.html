@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#FFD700">
-  <title>Ordini Post - PROVA</title>
+  <title>Versione Beta</title>
   <style>
     body {
       font-family: "Segoe UI", sans-serif;
@@ -197,7 +197,6 @@
 
 <button onclick="confermaOrdine()">Prenota</button>
 <button onclick="mostraRiepilogoPrenotazioni()">Riepilogo Prenotazioni</button>
-<button onclick="mostraDettaglioPerPersone()" style="margin-top: 0.5rem; background-color: #0a1a3f;">Vedi Dettaglio per Persone</button>
 
 <div id="modal">
   <div id="modal-content">
@@ -282,7 +281,7 @@
                     : `<input type="number" id="quantita-${i}" min="0" max="${p.giacenza}" />`
                 }</td>
                 <td> 
-                  <input type="text" id="nota-${i}" placeholder="Esempio: Senza lattosio" style="max-width: 150px; margin: 0; padding: 0.5rem;" />
+                  <input type="text" id="nota-${i}" placeholder="Esempio: 1 Mario 2 Luca" style="max-width: 150px; margin: 0; padding: 0.5rem;" />
                 </td> 
               </tr>`;
   });
@@ -403,16 +402,16 @@
         return;
       }
 
-      // MODIFICA: Inclusione del campo Nota Annullamento
       let html = `<p>Riepilogo per <strong>${nominativo}</strong>. Inserisci la quantità che desideri annullare.</p>`;
-      html += `<div style="margin-bottom: 1.5rem;">
-                <label for="notaAnnullamento" style="display:block; margin-bottom: 0.5rem; font-weight: bold;">Nota per l'Annullamento (Opzionale):</label>
-                <input type="text" id="notaAnnullamento" placeholder="Motivo o dettaglio dell'annullamento" style="width: 100%; max-width: 100%; padding: 0.7rem; margin-top: 0;"/>
-              </div>`;
-      // Fine Modifica
-
+      
+      // NUOVE COLONNE: Qtà da Annullare E Nota Annullamento
       html += `<table style="width:100%; text-align:center;">
-                  <tr><th>Prodotto</th><th>Prenotati</th><th>Qtà da Annullare</th></tr>`;
+                  <tr>
+                    <th>Prodotto</th>
+                    <th>Prenotati</th>
+                    <th>Qtà da Annullare</th>
+                    <th>Nota Annullamento</th>
+                  </tr>`;
       
       prenotazioniAttive.forEach((item, i) => {
         html += `<tr>
@@ -423,11 +422,22 @@
                             min="0" max="${item.valore}" value="0" 
                             style="width: 70px; padding: 0.4rem; margin-top: 0;">
                    </td>
+                   <td>
+                     <input type="text" id="nota-annulla-${i}" 
+                            placeholder="Esempio: 1 Mario 2 Luca" style="width: 100px; padding: 0.4rem; margin-top: 0;">
+                   </td>
                  </tr>`;
       });
       
       html += `</table><br>`;
-      html += `<button id="btnConfermaAnnullamento" onclick="inviaAnnullamento()">Conferma Annullamenti</button>`;
+      
+      // NUOVO POSIZIONAMENTO DEI PULSANTI
+      html += `<div style="display: flex; justify-content: space-between; gap: 10px;">`
+      html += `<button id="btnConfermaAnnullamento" onclick="inviaAnnullamento()" style="flex-grow: 1;">Conferma Annullamenti</button>`;
+      html += `<button onclick="mostraDettaglioPerPersone(true)" style="flex-grow: 1; background-color: #0a1a3f;">Vedi Dettaglio per Persone</button>`;
+      html += `<button onclick="document.getElementById('modal-riepilogo').style.display='none'" style="flex-grow: 1; background-color: #6c757d;">Chiudi</button>`;
+      html += `</div>`;
+
 
       contenuto.innerHTML = html;
 
@@ -440,9 +450,6 @@
   async function inviaAnnullamento() {
     const nome = document.getElementById("nome").value.trim();
     const btn = document.getElementById("btnConfermaAnnullamento");
-    
-    // NUOVO: Cattura la nota generale per l'annullamento
-    const notaAnnullamento = document.getElementById("notaAnnullamento").value.trim();
     
     btn.disabled = true;
     btn.innerHTML = 'Elaborazione... <span class="spinner"></span>';
@@ -453,10 +460,13 @@
     const prenotazioniAttive = riepilogoCorrente.filter(item => item.valore > 0);
 
     prenotazioniAttive.forEach((item, i) => {
-      const input = document.getElementById(`annulla-${i}`);
-      if (input) {
-        const qtyDaAnnullare = parseInt(input.value) || 0;
-        
+      const inputQty = document.getElementById(`annulla-${i}`);
+      const inputNota = document.getElementById(`nota-annulla-${i}`); // NUOVO: Input Nota
+
+      if (inputQty) {
+        const qtyDaAnnullare = parseInt(inputQty.value) || 0;
+        const notaAnnullamento = inputNota ? inputNota.value.trim() : ""; // NUOVO: Cattura la nota
+
         if (qtyDaAnnullare > item.valore) {
           alert(`Errore: Non puoi annullare ${qtyDaAnnullare} ${item.prodotto}, ne hai prenotati solo ${item.valore}.`);
           errore = true;
@@ -467,7 +477,7 @@
             nome: nome,
             prodotto: item.prodotto,
             quantita: -qtyDaAnnullare,
-            nota: notaAnnullamento // MODIFICA: Aggiunto il campo nota
+            nota: `Annullato: ${notaAnnullamento}`.trim() // Aggiungi prefisso per chiarezza nel foglio GAS
           });
         }
       }
@@ -504,10 +514,16 @@
       btn.innerHTML = 'Conferma Annullamenti';
     }
   }
+  // La funzione mostraDettaglioPerPersone deve essere definita come segue:
 
-  async function mostraDettaglioPerPersone() {
+  async function mostraDettaglioPerPersone(chiudiRiepilogo = false) { // Aggiunto parametro opzionale
     const nominativo = document.getElementById('nome').value.trim();
     if (!nominativo) return alert("Seleziona prima un nominativo.");
+
+    // Chiude il modal di riepilogo se la chiamata proviene dal suo interno
+    if (chiudiRiepilogo) {
+      document.getElementById('modal-riepilogo').style.display = "none";
+    }
 
     const spinner = document.getElementById("spinner-dettaglio");
     const contenuto = document.getElementById("contenuto-dettaglio");
@@ -518,7 +534,6 @@
     modal.style.display = "flex";
 
     try {
-        // Chiama la nuova action in Google App Script
         const url = scriptUrl + "?action=dettaglio&nominativo=" + encodeURIComponent(nominativo);
         const res = await fetch(url);
         const dettaglioFamiglia = await res.json();
@@ -532,17 +547,14 @@
 
         let html = `<h4>Riepilogo consolidato (per persona) per <strong>${nominativo}</strong>:</h4>`;
 
-        // Mostra un riepilogo per ogni persona della famiglia
         dettaglioFamiglia.forEach((persona) => {
             const nomePersona = persona.nominativo;
             html += `<div style="margin-top:1.5rem; padding: 1rem; border: 1px solid #e0f2f1; border-radius: 5px;">`;
             html += `<h5>👤 ${nomePersona}</h5>`;
             
-            // Crea una tabella solo per i prodotti di questa persona
             html += `<table style="width:100%; margin-top:0.5rem; text-align:center;">
                         <tr><th>Prodotto</th><th>Quantità</th></tr>`;
             
-            // Itera sui prodotti prenotati (tutte le chiavi tranne 'nominativo')
             Object.keys(persona).forEach(key => {
                 if (key !== 'nominativo') {
                     html += `<tr>
