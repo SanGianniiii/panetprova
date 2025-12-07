@@ -7,138 +7,170 @@
   <meta name="theme-color" content="#FFD700">
   <title>Ordini Post - PROVA</title>
   <style>
-    body {
-      font-family: "Segoe UI", sans-serif;
-      background: linear-gradient(to right, #e8f5e9, #0a1a3f);
-      margin: 0;
-      padding: 2rem;
-      color: #2e7d32;
-    }
-    #splash {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background-color: #0a1a3f;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 99999;
-      opacity: 1;
-      transition: opacity 1s ease-out;
-    }
-    /* MODIFICA PER IL VIDEO */
-    #splash video {
-      width: 100%;
-      max-width: 500px; /* Regola la grandezza massima */
-      height: auto;
-      border-radius: 15px; /* Un po' di bordo arrotondato per eleganza */
-      animation: fadeIn 1s ease-in-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.8); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      justify-content: center;
-      margin-bottom: 2rem;
-    }
-    header img {
-      width: 120px;
-      height: 120px;
-    }
-    h2 {
-      margin: 0;
-      font-size: 2.4rem;
-    }
-    select, input[type="number"], button {
-      width: 100%;
-      padding: 0.7rem;
-      margin-top: 1rem;
-      font-size: 1rem;
-      border-radius: 6px;
-      border: 1px solid #a5d6a7;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background-color: white;
-      margin-top: 1rem;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0, 128, 0, 0.2);
-    }
-    th, td {
-      padding: 0.8rem;
-      text-align: center;
-      border-bottom: 1px solid #e0f2f1;
-    }
-    th {
-      background-color: #a5d6a7;
-      color: white;
-    }
-    button {
-      background-color: #2e7d32;
-      color: white;
-      border: none;
-      margin-top: 1.5rem;
-      font-weight: bold;
-      transition: background 0.3s;
-    }
-    button:hover {
-      background-color: #1b5e20;
-    }
-    #modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: none;
-      justify-content: center;
-      align-items: center;
-    }
-    #modal-content {
-      background: white;
-      padding: 2rem;
-      border-radius: 10px;
-      max-width: 90%;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    #modal-content h3 {
-      margin-top: 0;
-      color: #2e7d32;
-    }
-    #modal-content button {
-      width: auto;
-      margin: 1rem 0.5rem 0 0;
-    }
-    @media (min-width: 768px) {
-      select, input[type="number"], button {
-        max-width: 500px;
-        margin-left: auto;
-        margin-right: auto;
-        display: block;
-      }
-    }
-    .spinner {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid #2e7d32;
-      border-top: 2px solid transparent;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      vertical-align: middle;
-      margin-left: 8px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    td input[type="number"] {
-      max-width: 80px;
-      box-sizing: border-box;
-    }
-  </style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(to right, #e8f5e9, #0a1a3f);
+      margin: 0;
+      padding: 2rem;
+      color: #2e7d32;
+    }
+    /* STILI MODAL DETTAGLIO/RIEPILOGO */
+    #modal-riepilogo > div, #modal-dettaglio-persone > div {
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    /* Rimuove lo spazio extra sotto l'intestazione del riepilogo/dettaglio */
+    #contenuto-riepilogo p, #contenuto-dettaglio h4 {
+      margin-top: 0.5rem;
+      margin-bottom: 0.8rem; 
+    }
+    /* Stile per il blocco di dettaglio di una singola persona */
+    .dettaglio-persona {
+      margin-top: 1rem; /* Ridotto */
+      padding: 0.8rem; /* Ridotto */
+      border: 1px solid #a5d6a7;
+      border-radius: 5px;
+    }
+    .dettaglio-persona h5 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      font-size: 1.4rem; /* Aumentato per maggiore enfasi */
+      color: #0a1a3f;
+    }
+    /* Fine STILI MODAL DETTAGLIO/RIEPILOGO */
+    #splash {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-color: #0a1a3f;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+      opacity: 1;
+      transition: opacity 1s ease-out;
+    }
+    /* MODIFICA PER IL VIDEO */
+    #splash video {
+      width: 100%;
+      max-width: 500px; /* Regola la grandezza massima */
+      height: auto;
+      border-radius: 15px; /* Un po' di bordo arrotondato per eleganza */
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    header img {
+      width: 120px;
+      height: 120px;
+    }
+    h2 {
+      margin: 0;
+      font-size: 2.4rem;
+    }
+    select, input[type="number"], input[type="text"], button {
+      width: 100%;
+      padding: 0.7rem;
+      margin-top: 1rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #a5d6a7;
+      box-sizing: border-box; /* Assicura che padding e border non aumentino la larghezza */
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      margin-top: 1rem;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0, 128, 0, 0.2);
+    }
+    th, td {
+      padding: 0.8rem;
+      text-align: center;
+      border-bottom: 1px solid #e0f2f1;
+    }
+    th {
+      background-color: #a5d6a7;
+      color: white;
+    }
+    button {
+      background-color: #2e7d32;
+      color: white;
+      border: none;
+      margin-top: 1.5rem;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #1b5e20;
+    }
+    #modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+    #modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 90%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    #modal-content h3 {
+      margin-top: 0;
+      color: #2e7d32;
+    }
+    /* Stili per i pulsanti all'interno dei modal */
+    #modal-content button, #modal-riepilogo button, #modal-dettaglio-persone button {
+      width: auto;
+      margin: 1rem 0 0 0; 
+      flex-grow: 1;
+    }
+    @media (min-width: 768px) {
+      select, input[type="number"], button {
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+      }
+    }
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #2e7d32;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    td input[type="number"], td input[type="text"] {
+      max-width: 80px;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0.4rem;
+    }
+    td input[type="text"] {
+      max-width: 120px;
+    }
+  </style>
 </head>
 <body>
 <script type="module">
@@ -211,24 +243,26 @@
 </div>
 
 <div id="modal-riepilogo" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;">
-  <div style="background:#fff;padding:20px;border-radius:10px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;">
-    <h3>Riepilogo Prenotazioni</h3>
-    <div id="spinner-riepilogo" style="display:none;color:#2e7d32;font-weight:bold;margin-bottom:1rem;">
-      Generazione riepilogo in corso... <span class="spinner"></span>
-    </div>
-    <pre id="contenuto-riepilogo" style="white-space: pre-wrap; font-family: monospace;"></pre>
-    <button onclick="document.getElementById('modal-riepilogo').style.display='none'">Chiudi</button>
-  </div>
+  <div style="background:#fff;padding:20px;border-radius:10px;max-width:800px;width:90%;"> 
+    <h3>Riepilogo Prenotazioni</h3>
+    <div id="spinner-riepilogo" style="display:none;color:#2e7d32;font-weight:bold;margin-bottom:1rem;">
+      Generazione riepilogo in corso... <span class="spinner"></span>
+    </div>
+    <div id="contenuto-riepilogo" style="white-space: pre-wrap; font-family: monospace;"></div>
+      </div>
 </div>
 
-  <div id="modal-dettaglio-persone" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center; z-index: 10000;">
-  <div style="background:#fff;padding:20px;border-radius:10px;max-width:800px;width:90%;max-height:90vh;overflow-y:auto;">
+<div id="modal-dettaglio-persone" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center; z-index: 10000;">
+  <div style="background:#fff;padding:20px;border-radius:10px;max-width:800px;width:90%;">
     <h3>Dettaglio Ordini per Persona</h3>
     <div id="spinner-dettaglio" style="display:none;color:#2e7d32;font-weight:bold;margin-bottom:1rem;">
       Caricamento dettaglio in corso... <span class="spinner"></span>
     </div>
     <div id="contenuto-dettaglio" style="white-space: pre-wrap; font-family: 'Segoe UI', sans-serif;"></div>
-    <button onclick="document.getElementById('modal-dettaglio-persone').style.display='none'" style="margin-top: 1rem;">Chiudi</button>
+    <div id="pulsanti-dettaglio" style="display: flex; justify-content: space-between; gap: 10px;">
+      <button id="btnApplicaModifiche" onclick="inviaModificaDettaglio()" style="flex-grow: 1; background-color: #2e7d32;">Applica Modifiche Ordini</button>
+      <button onclick="document.getElementById('modal-dettaglio-persone').style.display='none'" style="flex-grow: 1; background-color: #6c757d;">Chiudi</button>
+    </div>
   </div>
 </div>
   
@@ -290,68 +324,70 @@
 }
 
  function confermaOrdine() {
-  const nome = document.getElementById("nome").value.trim();
-  if (!nome) return alert("Seleziona il nome della tua famiglia.");
+  const nome = document.getElementById("nome").value.trim();
+  if (!nome) return alert("Seleziona il nome della tua famiglia.");
 
-  localStorage.setItem("famiglia", nome);
+  localStorage.setItem("famiglia", nome);
 
-  const ordine = [];
-  for (let i = 0; i < prodotti.length; i++) {
-    const p = prodotti[i];
-    const input = document.getElementById(`quantita-${i}`);
-    
-    // NUOVO: Seleziona anche l'input della nota
-    const inputNota = document.getElementById(`nota-${i}`); 
-    
-    if (!input) continue;
+  const ordine = [];
+  for (let i = 0; i < prodotti.length; i++) {
+    const p = prodotti[i];
+    const inputQty = document.getElementById(`quantita-${i}`);
+    const inputNota = document.getElementById(`nota-${i}`); 
+    
+    if (!inputQty) continue;
 
-    const qty = parseInt(input.value) || 0;
-    
-    // NUOVO: Ottieni la nota (trimma gli spazi, usa stringa vuota se non c'è nulla)
-    const nota = inputNota ? inputNota.value.trim() : ""; 
+    const qty = parseInt(inputQty.value) || 0;
+    const nota = inputNota ? inputNota.value.trim() : ""; 
 
-    if (qty > p.giacenza) {
-      alert(`Attenzione: la giacenza del prodotto "${p.tipo}" è inferiore alla richiesta, modificalo.`);
+    if (qty > p.giacenza) {
+      alert(`Attenzione: la giacenza del prodotto "${p.tipo}" è inferiore alla richiesta, modificalo.`);
+      return;
+    }
+
+    // NUOVA VALIDAZIONE: Nota obbligatoria se la quantità è > 0
+    if (qty > 0 && !nota) {
+      alert(`⚠️ È obbligatorio specificare una nota per il prodotto "${p.tipo}".`);
       return;
     }
 
-    if (qty > 0) {
-      ordine.push({ 
-        nome, 
-        prodotto: p.tipo, 
-        quantita: qty,
-        nota: nota // NUOVO: Aggiungi la nota all'oggetto ordine
-      });
-    }
-  }
+    if (qty > 0) {
+      ordine.push({ 
+        nome, 
+        prodotto: p.tipo, 
+        quantita: qty,
+        nota: nota
+      });
+    }
+  }
 
-  if (ordine.length === 0) return alert("Nessun prodotto selezionato.");
+  if (ordine.length === 0) return alert("Nessun prodotto selezionato.");
 
-  // Aggiorna il riepilogo nel modal per includere la nota
-  let riepilogo = `Famiglia: ${nome}\n\n`;
-  ordine.forEach(o => {
-    let riga = `- ${o.prodotto}: ${o.quantita}`;
-    if (o.nota) { // Mostra la nota solo se è stata inserita
-        riga += ` (Nota: ${o.nota})`;
-    }
-    riepilogo += riga + '\n';
-  });
+  // Aggiorna il riepilogo nel modal per includere la nota
+  let riepilogo = `Famiglia: ${nome}\n\n`;
+  ordine.forEach(o => {
+    let riga = `- ${o.prodotto}: ${o.quantita}`;
+    if (o.nota) { 
+        riga += ` (Nota: ${o.nota})`;
+    }
+    riepilogo += riga + '\n';
+  });
 
-  ordineDaInviare = ordine;
-  document.getElementById("riepilogoModal").innerText = riepilogo;
+  ordineDaInviare = ordine;
+  document.getElementById("riepilogoModal").innerText = riepilogo;
 
-  const confermaBtn = document.querySelector('#modal-content button:nth-child(4)');
-  const annullaBtn = document.querySelector('#modal-content button:nth-child(5)');
+  const confermaBtn = document.querySelector('#modal-content button:nth-child(4)');
+  const annullaBtn = document.querySelector('#modal-content button:nth-child(5)');
 
-  if (confermaBtn) {
-    confermaBtn.style.display = "inline-block";
-    confermaBtn.disabled = false;
-  }
-  if (annullaBtn) {
-    annullaBtn.style.display = "inline-block";
-  }
+  if (confermaBtn) {
+    confermaBtn.style.display = "inline-block";
+    confermaBtn.disabled = false;
+  }
+  if (annullaBtn) {
+    annullaBtn.style.display = "inline-block";
+  }
 
-  document.getElementById("modal").style.display = "flex";
+  document.getElementById("modal").style.display = "flex";
 }
   function chiudiModal() {
     document.getElementById("modal").style.display = "none";
@@ -402,9 +438,9 @@
         return;
       }
 
-      let html = `<p>Riepilogo per <strong>${nominativo}</strong>. Inserisci la quantità che desideri annullare.</p>`;
+      let html = `<p style="margin-bottom: 0.5rem;">Riepilogo per <strong>${nominativo}</strong>. Inserisci la quantità che desideri annullare.</p>`;
       
-      // NUOVE COLONNE: Qtà da Annullare E Nota Annullamento
+      // Tabella con Nota Annullamento per riga
       html += `<table style="width:100%; text-align:center;">
                   <tr>
                     <th>Prodotto</th>
@@ -420,19 +456,19 @@
                    <td>
                      <input type="number" id="annulla-${i}" 
                             min="0" max="${item.valore}" value="0" 
-                            style="width: 70px; padding: 0.4rem; margin-top: 0;">
+                            style="width: 70px;">
                    </td>
                    <td>
                      <input type="text" id="nota-annulla-${i}" 
-                            placeholder="Motivo" style="width: 100px; padding: 0.4rem; margin-top: 0;">
+                            placeholder="Motivo" style="width: 120px;">
                    </td>
                  </tr>`;
       });
       
-      html += `</table><br>`;
+      html += `</table>`;
       
-      // NUOVO POSIZIONAMENTO DEI PULSANTI
-      html += `<div style="display: flex; justify-content: space-between; gap: 10px;">`
+      // POSIZIONAMENTO PULSANTI: Conferma, Dettaglio, Chiudi
+      html += `<div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 1.5rem;">`
       html += `<button id="btnConfermaAnnullamento" onclick="inviaAnnullamento()" style="flex-grow: 1;">Conferma Annullamenti</button>`;
       html += `<button onclick="mostraDettaglioPerPersone(true)" style="flex-grow: 1; background-color: #0a1a3f;">Vedi Dettaglio per Persone</button>`;
       html += `<button onclick="document.getElementById('modal-riepilogo').style.display='none'" style="flex-grow: 1; background-color: #6c757d;">Chiudi</button>`;
@@ -446,8 +482,7 @@
       contenuto.innerText = "Errore: " + err.message;
     }
   }
-
-  async function inviaAnnullamento() {
+ async function inviaAnnullamento() {
     const nome = document.getElementById("nome").value.trim();
     const btn = document.getElementById("btnConfermaAnnullamento");
     
@@ -461,23 +496,29 @@
 
     prenotazioniAttive.forEach((item, i) => {
       const inputQty = document.getElementById(`annulla-${i}`);
-      const inputNota = document.getElementById(`nota-annulla-${i}`); // NUOVO: Input Nota
+      const inputNota = document.getElementById(`nota-annulla-${i}`); 
 
       if (inputQty) {
         const qtyDaAnnullare = parseInt(inputQty.value) || 0;
-        const notaAnnullamento = inputNota ? inputNota.value.trim() : ""; // NUOVO: Cattura la nota
+        const notaAnnullamento = inputNota ? inputNota.value.trim() : "";
 
         if (qtyDaAnnullare > item.valore) {
           alert(`Errore: Non puoi annullare ${qtyDaAnnullare} ${item.prodotto}, ne hai prenotati solo ${item.valore}.`);
           errore = true;
         }
+        
+        // NUOVA VALIDAZIONE: Nota obbligatoria se la quantità da annullare è > 0
+        if (qtyDaAnnullare > 0 && !notaAnnullamento) {
+          alert(`⚠️ È obbligatorio specificare una nota per l'annullamento del prodotto "${item.prodotto}".`);
+          errore = true;
+        }
 
-        if (qtyDaAnnullare > 0) {
+        if (qtyDaAnnullare > 0 && !errore) {
           ordineDiAnnullamento.push({
             nome: nome,
             prodotto: item.prodotto,
             quantita: -qtyDaAnnullare,
-            nota: `Annullato: ${notaAnnullamento}`.trim() // Aggiungi prefisso per chiarezza nel foglio GAS
+            nota: `Annullato: ${notaAnnullamento}`
           });
         }
       }
@@ -488,40 +529,17 @@
       btn.innerHTML = 'Conferma Annullamenti';
       return;
     }
-
-    if (ordineDiAnnullamento.length === 0) {
-      alert("Nessuna quantità da annullare inserita.");
-      btn.disabled = false;
-      btn.innerHTML = 'Conferma Annullamenti';
-      return;
-    }
-
-    try {
-      const res = await fetch(scriptUrl, {
-        method: "POST",
-        body: JSON.stringify({ action: "prenota", ordine: ordineDiAnnullamento })
-      });
-      await res.json();
-      
-      alert("✅ Annullamento registrato con successo!");
-      
-      document.getElementById('modal-riepilogo').style.display = "none";
-      caricaProdotti(); 
-      
-    } catch (e) {
-      alert("Errore invio annullamento: " + e.message);
-      btn.disabled = false;
-      btn.innerHTML = 'Conferma Annullamenti';
-    }
-  }
+    // ... (restante logica invariata)
+// ...
 
   // La funzione mostraDettaglioPerPersone deve essere definita come segue:
 
-  async function mostraDettaglioPerPersone(chiudiRiepilogo = false) { // Aggiunto parametro opzionale
+  // La funzione mostraDettaglioPerPersone deve essere definita come segue:
+
+  async function mostraDettaglioPerPersone(chiudiRiepilogo = false) { 
     const nominativo = document.getElementById('nome').value.trim();
     if (!nominativo) return alert("Seleziona prima un nominativo.");
 
-    // Chiude il modal di riepilogo se la chiamata proviene dal suo interno
     if (chiudiRiepilogo) {
       document.getElementById('modal-riepilogo').style.display = "none";
     }
@@ -531,6 +549,7 @@
     const modal = document.getElementById('modal-dettaglio-persone');
     
     contenuto.innerHTML = ""; 
+    document.getElementById('pulsanti-dettaglio').style.display = 'flex'; // Riabilita i pulsanti
     spinner.style.display = "block";
     modal.style.display = "flex";
 
@@ -543,24 +562,37 @@
         
         if (!dettaglioFamiglia.length) {
             contenuto.innerText = `Nessun ordine consolidato trovato nel foglio "dettaglio" per la famiglia ${nominativo}.`;
+            document.getElementById('pulsanti-dettaglio').style.display = 'none';
             return;
         }
 
-        let html = `<h4>Riepilogo consolidato (per persona) per <strong>${nominativo}</strong>:</h4>`;
+        let html = `<h4>Riepilogo consolidato e Modifica Ordini per <strong>${nominativo}</strong>:</h4>
+        <p style="margin-top: 0.2rem; font-size: 0.9em; color: #6c757d;">*Inserisci quantità positive per **Aggiungere**, negative per **Sottrarre**.</p>`;
 
-        dettaglioFamiglia.forEach((persona) => {
+        dettaglioFamiglia.forEach((persona, pIdx) => {
             const nomePersona = persona.nominativo;
-            html += `<div style="margin-top:1.5rem; padding: 1rem; border: 1px solid #e0f2f1; border-radius: 5px;">`;
+            html += `<div class="dettaglio-persona">`;
             html += `<h5>👤 ${nomePersona}</h5>`;
             
             html += `<table style="width:100%; margin-top:0.5rem; text-align:center;">
-                        <tr><th>Prodotto</th><th>Quantità</th></tr>`;
+                        <tr>
+                            <th>Prodotto</th>
+                            <th>Attuale</th>
+                            <th>Modifica (+/-)</th>
+                        </tr>`;
             
             Object.keys(persona).forEach(key => {
                 if (key !== 'nominativo') {
                     html += `<tr>
                             <td>${key}</td>
                             <td><strong>${persona[key]}</strong></td>
+                            <td>
+                                <input type="number" id="modifica-${pIdx}-${key.replace(/\s/g, '_')}" 
+                                       min="-${persona[key]}" value="0" 
+                                       data-prodotto="${key}"
+                                       data-persona="${nomePersona}"
+                                       style="width: 80px;"/>
+                            </td>
                          </tr>`;
                 }
             });
@@ -574,7 +606,70 @@
         contenuto.innerText = "Errore nel caricamento del dettaglio: " + err.message;
     }
   }
-  
+
+async function inviaModificaDettaglio() {
+    const nomeFamiglia = document.getElementById("nome").value.trim();
+    const btn = document.getElementById("btnApplicaModifiche");
+    
+    const modificheDaInviare = [];
+    let modificheTotali = 0;
+
+    // Cerca tutti i campi di input di modifica
+    document.querySelectorAll('[id^="modifica-"]').forEach(input => {
+        const modifica = parseInt(input.value) || 0;
+        
+        if (modifica !== 0) {
+            const prodotto = input.getAttribute('data-prodotto');
+            const nomePersona = input.getAttribute('data-persona');
+            
+            // Crea la nota automatica
+            const azione = modifica > 0 ? "Aggiunta" : "Sottrazione";
+            const notaAutomatica = `${azione} da ${nomePersona} (Dettaglio)`;
+
+            modificheDaInviare.push({
+                nome: nomeFamiglia,
+                prodotto: prodotto,
+                quantita: modifica, // Positivo per aggiungere, negativo per sottrarre
+                nota: notaAutomatica
+            });
+            modificheTotali++;
+        }
+    });
+
+    if (modificheTotali === 0) {
+        alert("Nessuna modifica inserita. Imposta un valore positivo (Aggiungi) o negativo (Sottrai) per procedere.");
+        return;
+    }
+    
+    // Conferma e Invio
+    if (!confirm(`Sei sicuro di voler inviare ${modificheTotali} modifiche d'ordine per ${nomeFamiglia}?`)) {
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = 'Invio Modifiche... <span class="spinner"></span>';
+
+    try {
+        const res = await fetch(scriptUrl, {
+            method: "POST",
+            // Riutilizza l'azione 'prenota' con l'array di modifiche
+            body: JSON.stringify({ action: "prenota", ordine: modificheDaInviare })
+        });
+        await res.json();
+        
+        alert("✅ Modifiche all'ordine registrate con successo!");
+        
+        document.getElementById('modal-dettaglio-persone').style.display = "none";
+        caricaProdotti(); // Ricarica la tabella principale con le nuove giacenze
+        
+    } catch (e) {
+        alert("Errore invio modifiche ordine: " + e.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Applica Modifiche Ordini';
+    }
+  }
+   
   window.onload = caricaProdotti;
 </script>
 </body>
