@@ -345,10 +345,11 @@ button:hover { background-color: #1b5e20; }
     document.getElementById("modal").style.display = "flex";
   }
 
-  async function eseguiOperazioneBackend() {
+async function eseguiOperazioneBackend() {
     const overlay = document.getElementById("loading-overlay");
     const statusBox = document.getElementById("status-message");
     
+    // 1. Mostra caricamento e pulisce i modal aperti
     overlay.style.display = "flex";
     chiudiModal();
     document.getElementById("modal-dettaglio-persone").style.display = "none";
@@ -360,21 +361,26 @@ button:hover { background-color: #1b5e20; }
         });
         await res.json();
 
-        // Messaggio di Successo
+        // 2. Ricarichiamo i dati della giacenza e mostriamo il riepilogo MENTRE c'è ancora l'overlay
+        await caricaDati();
+        await mostraRiepilogoPrenotazioni(true); // Apre il riepilogo in sottofondo
+
+        // 3. Nascondiamo l'overlay di caricamento
+        overlay.style.display = "none";
+
+        // 4. FACCIAMO SPUNTARE IL MESSAGGIO SOPRA IL RIEPILOGO
         statusBox.innerText = "✅ ORDINE CONFERMATO";
         statusBox.className = "status-success";
         statusBox.style.display = "block";
 
-        await caricaDati();
-
-        setTimeout(async () => {
+        // 5. Il messaggio scompare da solo dopo 2 secondi
+        setTimeout(() => {
             statusBox.style.display = "none";
-            overlay.style.display = "none";
-            await mostraRiepilogoPrenotazioni(true);
-        }, 1500);
+        }, 2000);
 
     } catch (e) {
-        // Messaggio di Errore
+        // In caso di errore, nascondiamo il caricamento e mostriamo l'errore
+        overlay.style.display = "none";
         statusBox.innerText = "❌ ORDINE NON CONFERMATO!!!";
         statusBox.className = "status-error";
         statusBox.style.display = "block";
@@ -383,8 +389,7 @@ button:hover { background-color: #1b5e20; }
 
         setTimeout(() => {
             statusBox.style.display = "none";
-            overlay.style.display = "none";
-        }, 3000);
+        }, 3500);
     }
   }
 
