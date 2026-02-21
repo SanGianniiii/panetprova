@@ -1,60 +1,50 @@
-const CACHE_NAME = 'panetprova-v52';
+const CACHE_NAME = 'panetprova-v53'; // Cambiato per forzare l'aggiornamento immediato
 const urlsToCache = [
   '/panetprova/',
   '/panetprova/index.html',
   '/panetprova/logo.png',
-  '/panetprova/manifest.json',
-  '/panetprova/jhs.mp4'
+  '/panetprova/manifest.json'
+  // Rimosso jhs.mp4
 ];
 
 self.addEventListener('install', function(e) {
-  console.log('[SW] Installazione Service Worker');
+  self.skipWaiting(); // Forza l'installazione immediata del nuovo SW
   e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      console.log('[SW] Caching assets compreso il video');
-      return cache.addAll(urlsToCache);
-    })
+    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
   );
 });
 
 self.addEventListener('activate', function(e) {
-  console.log('[SW] Attivazione Service Worker');
   e.waitUntil(
-    caches.keys().then(names =>
-      Promise.all(names.map(n => { if (n !== CACHE_NAME) caches.delete(n); }))
-    )
+    caches.keys().then(names => Promise.all(
+      names.map(n => { if (n !== CACHE_NAME) return caches.delete(n); })
+    ))
   );
+  return self.clients.claim(); // Prende il controllo immediato della pagina
 });
 
 self.addEventListener('fetch', function(e) {
-  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
-});
-
-self.addEventListener('notificationclick', function(event) {
-  console.log('[SW] Notifica cliccata');
-  event.notification.close();
-  event.waitUntil(clients.openWindow('/panetprova/'));
+  // Strategia Network-First per la navigazione (index.html) e chiamate API (Google Script)
+  if (e.request.mode === 'navigate' || e.request.url.includes('script.google.com')) {
+    e.respondWith(
+      fetch(e.request).catch(() => caches.match(e.request))
+    );
+  } else {
+    // Strategia Stale-While-Revalidate per immagini e asset
+    e.respondWith(
+      caches.match(e.request).then(cachedResponse => {
+        const fetchPromise = fetch(e.request).then(networkResponse => {
+          caches.open(CACHE_NAME).then(cache => cache.put(e.request, networkResponse.clone()));
+          return networkResponse;
+        }).catch(() => {}); // Ignora errori se offline
+        
+        return cachedResponse || fetchPromise;
+      })
+    );
+  }
 });
 
 // -------- FIREBASE CLOUD MESSAGING --------
+// ... (Lascia invariata tutta la tua parte Firebase qui sotto) ...
 importScripts("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js");
-importScripts("https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js");
-
-firebase.initializeApp({
-  messagingSenderId: "363847145933",
-  apiKey: "AIzaSyAY8l_GGRWPWi5BFpirUMXd2JN0MVZZpYM",
-  projectId: "ordinipost-fcc7f",
-  appId: "1:363847145933:web:d1590848833eb147590c84",
-});
-
-const messaging = firebase.messaging();
-
-messaging.onBackgroundMessage(payload => {
-  console.log("📦 Messaggio in background:", payload);
-  const notificationTitle = payload.notification.title || 'Nuovo Messaggio';
-  const notificationOptions = {
-    body: payload.notification.body || '',
-    icon: '/panetprova/logo.png'
-  };
-  self.registration.showNotification(notificationTitle, notificationOptions);
-});
+// ... resto del tuo codice firebase ...
