@@ -210,44 +210,100 @@ button { background-color: #2e7d32; color: white; border: none; font-weight: bol
     document.getElementById("lista-prodotti").innerHTML = html;
   }
 
+// --- 1. LOGICA PRENOTAZIONE PRINCIPALE (CON CONTROLLO OVERBOOKING) ---
   function confermaOrdine() {
     const nomeFamiglia = document.getElementById("nome").value;
     if (!nomeFamiglia) return alert("Seleziona la famiglia!");
     localStorage.setItem("famiglia", nomeFamiglia);
+    
     const ordine = [];
+    let erroreGiacenza = false;
+
     prodottiGlobal.forEach((p, i) => {
-      const q = parseInt(document.getElementById(`qta-${i}`)?.value) || 0;
+      if (erroreGiacenza) return; // Se c'è già un errore, salta gli altri
+
+      const qInput = document.getElementById(`qta-${i}`);
+      if (!qInput) return;
+
+      const q = parseInt(qInput.value) || 0;
       const n = document.getElementById(`nota-${i}`)?.value.trim() || "";
-      if (q > 0) { if (!n) { alert(`Manca nota per ${p.tipo}`); throw "Stop"; }
-        ordine.push({ nome: nomeFamiglia, prodotto: p.tipo, quantita: q, nota: n }); }
+      
+      if (q > 0) { 
+        // CONTROLLO GIACENZA
+        if (q > p.giacenza) {
+            alert(`⛔ ATTENZIONE: Quantità per "${p.tipo}" non disponibile.\nHai inserito ${q}, ma sono disponibili solo ${p.giacenza} pezzi.`);
+            erroreGiacenza = true;
+            return;
+        }
+
+        if (!n) { 
+            alert(`Inserisci una nota (Chi?) per ${p.tipo}`); 
+            erroreGiacenza = true;
+            return; 
+        }
+
+        ordine.push({ nome: nomeFamiglia, prodotto: p.tipo, quantita: q, nota: n }); 
+      }
     });
-    if (ordine.length === 0) return;
+
+    if (erroreGiacenza) return; // Blocca l'apertura del modal se c'è un errore
+    if (ordine.length === 0) return alert("Nessun prodotto selezionato.");
+    
     payloadTemporaneo = ordine;
     let text = `Nuova Prenotazione:\n`;
     ordine.forEach(o => text += `• ${o.prodotto}: ${o.quantita} (${o.nota})\n`);
+    
     document.getElementById("titoloModal").innerText = "Conferma Ordine";
     document.getElementById("riepilogoCorpo").innerText = text;
     document.getElementById("modal").style.display = "flex";
   }
 
+  // --- 2. LOGICA MODIFICHE DETTAGLIO (CON CONTROLLO OVERBOOKING INCROCIATO) ---
   function preparaModificaDettaglio() {
     const fam = document.getElementById("nome").value;
     const modifiche = [];
     let riepilogoTesto = `⚠️ MODIFICA ESISTENTE\n\n`;
+    
+    // Oggetto per tenere traccia della somma totale richiesta per ogni prodotto
+    const variazioniTotali = {};
+
     document.querySelectorAll(".card-persona").forEach(card => {
         const inAdds = card.querySelectorAll(".in-add");
         const inSubs = card.querySelectorAll(".in-sub");
+        
         inAdds.forEach((el, i) => {
             const add = parseInt(el.value) || 0;
             const sub = parseInt(inSubs[i].value) || 0;
             const netto = add - sub;
+            
             if (netto !== 0) {
-                modifiche.push({ nome: fam, prodotto: el.dataset.prod, quantita: netto, nota: `${netto > 0 ? 'Agg.' : 'Sott.'} da ${el.dataset.pers}` });
-                riepilogoTesto += `• ${el.dataset.pers} | ${el.dataset.prod}: ${netto > 0 ? '+' : ''}${netto}\n`;
+                const prod = el.dataset.prod;
+                const pers = el.dataset.pers;
+                
+                // Sommiamo le variazioni (es. Mario +2, Luigi +1 = totale +3 per quel prodotto)
+                variazioniTotali[prod] = (variazioniTotali[prod] || 0) + netto;
+                
+                modifiche.push({ nome: fam, prodotto: prod, quantita: netto, nota: `${netto > 0 ? 'Agg.' : 'Sott.'} da ${pers}` });
+                riepilogoTesto += `• ${pers} | ${prod}: ${netto > 0 ? '+' : ''}${netto}\n`;
             }
         });
     });
-    if (modifiche.length === 0) return alert("Nessuna modifica.");
+
+    if (modifiche.length === 0) return alert("Nessuna modifica inserita.");
+
+    // CONTROLLO GIACENZA SULLA SOMMA DELLE MODIFICHE
+    for (const [prod, qtaNettaRichiesta] of Object.entries(variazioniTotali)) {
+        if (qtaNettaRichiesta > 0) {
+            // Cerchiamo il prodotto nei dati globali per leggerne la giacenza attuale
+            const p = prodottiGlobal.find(x => x.tipo === prod);
+            
+            if (p && qtaNettaRichiesta > p.giacenza) {
+                alert(`⛔ ATTENZIONE: Overbooking per "${prod}".\nHai richiesto un totale di +${qtaNettaRichiesta} pezzi extra, ma in magazzino ne sono disponibili solo ${p.giacenza}.`);
+                return; // Ferma l'operazione
+            }
+        }
+    }
+
     payloadTemporaneo = modifiche;
     document.getElementById("titoloModal").innerText = "Conferma Modifiche";
     document.getElementById("riepilogoCorpo").innerText = riepilogoTesto;
