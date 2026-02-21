@@ -540,36 +540,38 @@ button:hover {
         spinner.style.display = "none";
         
         if (!dettaglioFamiglia.length) {
-            contenuto.innerText = `Nessun ordine consolidato trovato.`;
-            document.getElementById('pulsanti-dettaglio').style.display = 'none';
-            contenuto.innerHTML += `<br><button onclick="document.getElementById('modal-dettaglio-persone').style.display='none'" style="margin-top:10px; background-color: #6c757d;">Chiudi</button>`;
+            contenuto.innerHTML = `<p>Nessun ordine trovato per questa famiglia.</p>`;
             return;
         }
 
-        let html = `<p style="margin-top: 0.2rem; font-size: 0.85em; color: #6c757d;">*Usa valori positivi per **Aggiungere**, negativi per **Sottrarre**.</p>`;
+        let html = `<p style="margin-top: 0.2rem; font-size: 0.85em; color: #6c757d; text-align:center;">Usa i tasti + e - per modificare le quantità attuali.</p>`;
 
         dettaglioFamiglia.forEach((persona, pIdx) => {
             const nomePersona = persona.nominativo;
-            html += `<div class="dettaglio-persona">`;
-            html += `<h5>👤 ${nomePersona}</h5>`;
+            html += `<div class="dettaglio-persona" style="border: 1px solid #ddd; margin-bottom: 15px; padding: 10px; border-radius: 8px; background: #f9f9f9;">`;
+            html += `<h5 style="margin: 0 0 10px 0; color: #0a1a3f; border-bottom: 1px solid #ccc; padding-bottom: 5px;">👤 ${nomePersona}</h5>`;
             
-            html += `<table>
-                        <tr>
-                            <th>Prodotto</th>
-                            <th>Att.</th>
-                            <th>Mod (+/-)</th>
+            html += `<table style="width: 100%; border-collapse: collapse;">
+                        <tr style="background: #eee;">
+                            <th style="text-align: left; padding: 5px;">Prodotto</th>
+                            <th style="padding: 5px;">Att.</th>
+                            <th style="padding: 5px;">Modifica</th>
                         </tr>`;
             
             Object.keys(persona).forEach(key => {
                 if (key !== 'nominativo') {
+                    const idInput = `modifica-${pIdx}-${key.replace(/\s/g, '_')}`;
                     html += `<tr>
-                            <td>${key}</td>
-                            <td><strong>${persona[key]}</strong></td>
-                            <td>
-                                <input type="number" id="modifica-${pIdx}-${key.replace(/\s/g, '_')}" 
-                                       min="-${persona[key]}" value="0" 
-                                       data-prodotto="${key}"
-                                       data-persona="${nomePersona}" />
+                            <td style="padding: 5px; font-size: 0.9em;">${key}</td>
+                            <td style="padding: 5px; text-align: center;"><strong>${persona[key]}</strong></td>
+                            <td style="padding: 5px; text-align: center;">
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                    <button onclick="cambiaValore('${idInput}', -1, ${persona[key]})" style="width: 30px; height: 30px; padding: 0; margin: 0; background: #d32f2f;">-</button>
+                                    <input type="number" id="${idInput}" value="0" readonly 
+                                           data-prodotto="${key}" data-persona="${nomePersona}"
+                                           style="width: 35px; text-align: center; border: none; background: transparent; font-weight: bold; margin:0;">
+                                    <button onclick="cambiaValore('${idInput}', 1)" style="width: 30px; height: 30px; padding: 0; margin: 0; background: #2e7d32;">+</button>
+                                </div>
                             </td>
                          </tr>`;
                 }
@@ -583,7 +585,26 @@ button:hover {
         spinner.style.display = "none";
         contenuto.innerText = "Errore: " + err.message;
     }
-  }
+}
+
+// Funzione di supporto per i pulsanti + e -
+function cambiaValore(id, delta, maxSottrazione = null) {
+    const input = document.getElementById(id);
+    let val = parseInt(input.value) || 0;
+    let nuovoVal = val + delta;
+    
+    // Se stiamo sottraendo, non possiamo togliere più di quello che la persona ha già
+    if (delta < 0 && maxSottrazione !== null) {
+        if (Math.abs(nuovoVal) > maxSottrazione) return; 
+    }
+    
+    input.value = nuovoVal;
+    
+    // Feedback visivo: colora il numero se positivo o negativo
+    if (nuovoVal > 0) input.style.color = "#2e7d32";
+    else if (nuovoVal < 0) input.style.color = "#d32f2f";
+    else input.style.color = "black";
+}
 
 async function inviaModificaDettaglio() {
     const nomeFamiglia = document.getElementById("nome").value.trim();
