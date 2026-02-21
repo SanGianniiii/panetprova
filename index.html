@@ -202,10 +202,37 @@ button { background-color: #2e7d32; color: white; border: none; font-weight: bol
   }
 
   function renderizzaTabellaPrincipale() {
-    let html = `<div class="table-wrapper"><table><thead><tr><th class="col-prod">Prodotto</th><th class="col-disp">Disp.</th><th class="col-qta">Quantità</th><th class="col-nota">Nota</th></tr></thead><tbody>`;
+    let html = `<div class="table-wrapper">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th class="col-prod">Prodotto</th>
+                        <th class="col-disp">Disp.</th>
+                        <th class="col-qta">Quantità</th>
+                        <th class="col-nota">Nota</th>
+                      </tr>
+                    </thead>
+                    <tbody>`;
+    
     prodottiGlobal.forEach((p, i) => {
-      html += `<tr><td class="col-prod" style="font-weight:600;">${p.tipo}</td><td class="col-disp">${p.giacenza}</td><td class="col-qta">${p.giacenza > 0 ? `<input type="number" id="qta-${i}" min="0" max="${p.giacenza}" placeholder="0">` : `<span style="color:red; font-size:0.7rem;">FINITO</span>`}</td><td class="col-nota"><input type="text" id="nota-${i}" placeholder="Es: Mario"></td></tr>`;
+      // Verifichiamo se il prodotto è esaurito
+      const isEsaurito = p.giacenza <= 0;
+
+      html += `<tr>
+                <td class="col-prod" style="font-weight:600;">${p.tipo}</td>
+                <td class="col-disp">${p.giacenza}</td>
+                <td class="col-qta">
+                  ${!isEsaurito 
+                    ? `<input type="number" id="qta-${i}" min="0" max="${p.giacenza}" placeholder="0">` 
+                    : `<span style="color:red; font-weight:bold; font-size:0.8rem;">SOLD OUT</span>`
+                  }
+                </td>
+                <td class="col-nota">
+                  <input type="text" id="nota-${i}" placeholder="${isEsaurito ? '' : 'Es: Mario'}" ${isEsaurito ? 'disabled style="background:#f2f2f2; border:none;"' : ''}>
+                </td>
+               </tr>`;
     });
+    
     html += `</tbody></table></div>`;
     document.getElementById("lista-prodotti").innerHTML = html;
   }
