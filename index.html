@@ -5,43 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#FFD700">
-  <title>Versione Beta</title>
+  <title>WebApp Beta - Gestione Ordini</title>
   <style>
-/* --- STILI BASE --- */
+/* --- STILI BASE E LAYOUT --- */
 body {
-    font-family: "Segoe UI", sans-serif;
-    background: linear-gradient(to right, #e8f5e9, #0a1a3f);
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(135deg, #f1f8e9 0%, #d1e9ff 100%);
     margin: 0;
     padding: 1rem;
-    color: #2e7d32;
-}
-
-#modal-riepilogo > div, #modal-dettaglio-persone > div {
-    max-height: 85vh;
-    overflow-y: auto;
-    padding: 15px; 
-    max-width: 95%; 
-}
-
-#contenuto-riepilogo p, #contenuto-dettaglio h4 {
-    margin-top: 0.5rem;
-    margin-bottom: 0.8rem;
-}
-
-.dettaglio-persona {
-    margin-top: 0.5rem;
-    padding: 0.8rem;
-    border: 1px solid #a5d6a7;
-    border-radius: 5px;
-    background-color: #fcfcfc;
-}
-.dettaglio-persona h5 {
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-    font-size: 1.1rem;
-    color: #0a1a3f;
-    border-bottom: 1px solid #e0e0e0;
-    padding-bottom: 5px;
+    color: #1a3a3a;
+    min-height: 100vh;
 }
 
 header {
@@ -49,86 +22,110 @@ header {
     align-items: center;
     gap: 1rem;
     justify-content: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 header img {
-    width: 80px; 
-    height: 80px;
+    width: 60px; 
+    height: 60px;
+    object-fit: contain;
 }
 h2 {
     margin: 0;
-    font-size: 1.8rem; 
+    font-size: 1.5rem;
+    color: #0a1a3f;
 }
 
+/* --- FORM E INPUT --- */
 select, input[type="number"], input[type="text"], button {
     width: 100%;
-    padding: 0.7rem;
-    margin-top: 1rem;
+    padding: 0.8rem;
+    margin-top: 0.5rem;
     font-size: 1rem;
-    border-radius: 6px;
+    border-radius: 8px;
     border: 1px solid #a5d6a7;
     box-sizing: border-box;
 }
 
-/* --- TABELLE RESPONSIVE --- */
+label {
+    font-weight: bold;
+    color: #2e7d32;
+    display: block;
+    margin-top: 1rem;
+}
+
+/* --- TABELLE E CONTENITORI --- */
 .table-wrapper {
     width: 100%;
-    overflow-x: auto; /* Permette lo scroll solo se necessario */
+    overflow-x: auto;
     margin-top: 1rem;
     border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 128, 0, 0.2);
     background-color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    background-color: white;
-    table-layout: auto; 
-}
-th, td {
-    padding: 0.6rem 0.3rem; 
-    font-size: 0.95rem; 
-    text-align: center;
-    border-bottom: 1px solid #e0f2f1;
-    word-wrap: break-word; /* Permette ai testi lunghi di andare a capo */
-}
-th {
-    background-color: #a5d6a7;
-    color: white;
-}
-td input[type="number"] {
-    max-width: 60px; 
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0.3rem;
-}
-td input[type="text"] {
-    width: 100%; /* La nota si prende tutto lo spazio possibile */
-    min-width: 90px;
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0.3rem;
+    table-layout: fixed; /* Importante per controllare le larghezze */
 }
 
+th, td {
+    padding: 0.8rem 0.4rem;
+    text-align: center;
+    border-bottom: 1px solid #edf2f7;
+    word-wrap: break-word; /* Testo a capo */
+    font-size: 0.9rem;
+}
+
+th {
+    background-color: #2e7d32;
+    color: white;
+    font-weight: 600;
+}
+
+/* --- MODULAZIONE COLONNE TABELLA PRINCIPALE --- */
+.col-prod { width: 30%; text-align: left; padding-left: 10px; }
+.col-disp { width: 15%; }
+.col-qta { width: 20%; }
+.col-nota { width: 35%; }
+
+td input[type="number"], td input[type="text"] {
+    margin: 0;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+}
+
+/* --- BOTTONI --- */
 button {
     background-color: #2e7d32;
     color: white;
     border: none;
-    margin-top: 1.5rem;
     font-weight: bold;
-    transition: background 0.3s;
+    cursor: pointer;
+    transition: transform 0.1s, background 0.3s;
+    margin-top: 1rem;
 }
-button:hover {
-    background-color: #1b5e20;
-}
-#modal-content button, #modal-riepilogo button, #modal-dettaglio-persone button {
-    width: auto;
-    margin: 1rem 0 0 0;
-    flex-grow: 1;
+button:active { transform: scale(0.98); }
+button:hover { background-color: #1b5e20; }
+
+.btn-secondary { background-color: #6c757d; }
+.btn-dark { background-color: #0a1a3f; }
+
+/* --- MODALI (SISTEMA Z-INDEX) --- */
+/* Modal Conferma (Il più alto) */
+#modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 30000; 
 }
 
-#modal {
+/* Modali Dettaglio e Riepilogo */
+#modal-riepilogo, #modal-dettaglio-persone {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
@@ -136,138 +133,120 @@ button:hover {
     display: none;
     justify-content: center;
     align-items: center;
-    z-index: 10000;
-}
-#modal-content {
-    background: white;
-    padding: 15px; 
-    border-radius: 10px;
-    max-width: 95%; 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-#modal-content h3 {
-    margin-top: 0;
-    color: #2e7d32;
+    z-index: 20000;
 }
 
+.modal-content-box {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* --- DETTAGLIO PERSONA CARD --- */
+.card-persona {
+    border: 1px solid #c8e6c9;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 15px;
+    background-color: #fafafa;
+}
+.card-persona h4 {
+    margin: 0 0 10px 0;
+    color: #0a1a3f;
+    border-bottom: 2px solid #2e7d32;
+    padding-bottom: 5px;
+}
+
+/* --- ANIMAZIONI --- */
 .spinner {
     display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2px solid #2e7d32;
-    border-top: 2px solid transparent;
+    width: 18px; height: 18px;
+    border: 3px solid rgba(46, 125, 50, 0.3);
+    border-top: 3px solid #2e7d32;
     border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+    animation: spin 1s linear infinite;
+    margin-left: 10px;
     vertical-align: middle;
-    margin-left: 8px;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-@media (min-width: 768px) {
-    select, input[type="number"], button {
-        max-width: 500px;
-        margin-left: auto;
-        margin-right: auto;
-        display: block;
-    }
+@media (min-width: 600px) {
+    .modal-content-box { width: 500px; }
 }
 </style>
 </head>
 <body>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAY8l_GGRWPWi5BFpirUMXd2JN0MVZZpYM",
-    authDomain: "ordinipost-fcc7f.firebaseapp.com",
-    projectId: "ordinipost-fcc7f",
-    storageBucket: "ordinipost-fcc7f.appspot.com",
-    messagingSenderId: "363847145933",
-    appId: "1:363847145933:web:d1590848833eb147590c84",
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const messaging = getMessaging(app);
-
-  navigator.serviceWorker
-    .register('/panetprova/firebase-messaging-sw.js')
-    .then(() => console.log('✅ Service Worker registrato'))
-    .catch(err => console.error('❌ Errore SW:', err));
-
-  onMessage(messaging, (payload) => {
-    alert(`📢 Notifica: ${payload.notification.title} - ${payload.notification.body}`);
-  });
-</script>
 
 <header>
-  <img src="logo.png" alt="Logo" />
-  <h2>WebApp Versione Beta3</h2>
+  <img src="logo.png" alt="Logo" onerror="this.style.display='none'"/>
+  <h2>WebApp Ordini v.Beta</h2>
 </header>
 
-<label for="nome">Seleziona Famiglia di Padrini:</label>
-<select id="nome">
-  <option value="">-- Seleziona la tua Famiglia --</option>
-  <option>Carapezza</option><option>Caruso</option><option>Di Maria</option>
-  <option>Marino</option><option>Massimino</option><option>Milanese</option>
-  <option>Murabito</option><option>Nicosia</option><option>Pantellaro</option>
-  <option>Porto</option><option>Romano</option><option>Ruiz</option>
-  <option>Scala</option><option>Tanasi</option><option>Zammillo</option>
-</select>
+<div style="max-width: 600px; margin: auto;">
+    <label for="nome">👤 Famiglia Padrini:</label>
+    <select id="nome">
+      <option value="">-- Seleziona --</option>
+      <option>Carapezza</option><option>Caruso</option><option>Di Maria</option>
+      <option>Marino</option><option>Massimino</option><option>Milanese</option>
+      <option>Murabito</option><option>Nicosia</option><option>Pantellaro</option>
+      <option>Porto</option><option>Romano</option><option>Ruiz</option>
+      <option>Scala</option><option>Tanasi</option><option>Zammillo</option>
+    </select>
 
-<div id="tabella-g">
-  <h3>Disponibilità prodotti</h3>
-  <div id="prodotti"></div>
+    <div id="sezione-prodotti">
+      <h3 style="color: #2e7d32; margin-top: 1.5rem;">📦 Disponibilità</h3>
+      <div id="lista-prodotti"></div>
+    </div>
+
+    <button onclick="confermaOrdine()">🚀 Invia Prenotazione</button>
+    <button class="btn-dark" onclick="mostraRiepilogoPrenotazioni()">📊 Vedi Mio Riepilogo</button>
 </div>
-
-<button onclick="confermaOrdine()">Prenota</button>
-<button onclick="mostraRiepilogoPrenotazioni()">Riepilogo Prenotazioni</button>
 
 <div id="modal">
-  <div id="modal-content">
-    <h3 id="titoloModal">Conferma ordine</h3>
-    <pre id="riepilogoModal" style="white-space: pre-wrap; font-family: monospace; font-size: 0.95rem; line-height: 1.4;"></pre>
-    <div id="messaggioAttesa" style="display:none;color:#2e7d32;font-weight:bold;">
-      ⏳ Attendi, operazione in corso... <span class="spinner"></span>
+  <div class="modal-content-box">
+    <h3 id="titoloModal" style="color: #2e7d32; margin-top: 0;">Conferma Azione</h3>
+    <div id="riepilogoCorpo" style="background: #f9f9f9; padding: 10px; border-radius: 5px; font-family: monospace; white-space: pre-wrap; font-size: 0.9rem; border: 1px solid #ddd;"></div>
+    
+    <div id="messaggioAttesa" style="display:none; margin-top: 15px; font-weight: bold; color: #2e7d32;">
+      Elaborazione in corso... <span class="spinner"></span>
     </div>
-    <div style="display: flex; gap: 10px;">
-        <button onclick="eseguiOperazioneBackend()">Conferma</button>
-        <button onclick="chiudiModal()" style="background-color: #6c757d;">Annulla</button>
+
+    <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button id="btnEsegui" onclick="eseguiOperazioneBackend()" style="margin:0;">Conferma</button>
+        <button onclick="chiudiModal()" class="btn-secondary" style="margin:0;">Annulla</button>
     </div>
   </div>
 </div>
 
-<div id="modal-riepilogo" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center; z-index: 10000;">
-  <div style="background:#fff;border-radius:10px;width:100%; padding-bottom: 10px;"> 
-    <h3 style="margin-left: 15px; margin-top: 15px;">Riepilogo Prenotazioni</h3>
-    <div id="spinner-riepilogo" style="display:none;color:#2e7d32;font-weight:bold;margin-left:15px;">
-      Recupero dati... <span class="spinner"></span>
-    </div>
+<div id="modal-riepilogo">
+  <div class="modal-content-box" style="max-width: 600px;">
+    <h3 style="margin-top: 0;">Riepilogo Famiglia</h3>
     <div id="contenuto-riepilogo"></div>
+    <button class="btn-secondary" onclick="document.getElementById('modal-riepilogo').style.display='none'">Chiudi</button>
   </div>
 </div>
 
-<div id="modal-dettaglio-persone" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center; z-index: 10000;">
-  <div style="background:#fff;border-radius:10px;width:100%; padding-bottom: 10px;">
-    <h3 style="margin-left: 15px; margin-top: 15px;">Dettaglio per Persona</h3>
-    <div id="spinner-dettaglio" style="display:none;color:#2e7d32;font-weight:bold;margin-left:15px;">
-      Caricamento in corso... <span class="spinner"></span>
-    </div>
-    <div id="contenuto-dettaglio" style="white-space: pre-wrap;"></div>
-    <div id="pulsanti-dettaglio" style="display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin: 0 15px;">
-      <button onclick="preparaModificaDettaglio()" style="flex-grow: 1; background-color: #2e7d32;">Applica Modifiche</button>
-      <button onclick="document.getElementById('modal-dettaglio-persone').style.display='none'" style="flex-grow: 1; background-color: #6c757d;">Chiudi</button>
+<div id="modal-dettaglio-persone">
+  <div class="modal-content-box" style="max-width: 650px; width: 95%;">
+    <h3 style="margin-top: 0;">Dettaglio per Persona</h3>
+    <div id="contenuto-dettaglio"></div>
+    <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <button onclick="preparaModificaDettaglio()" style="margin:0;">Applica Modifiche</button>
+        <button class="btn-secondary" onclick="document.getElementById('modal-dettaglio-persone').style.display='none'" style="margin:0;">Chiudi</button>
     </div>
   </div>
 </div>
-  
+
 <script>
   const scriptUrl = "https://script.google.com/macros/s/AKfycbxEDGWC2lozKekZlR1dvIY2_3OZYdPb81-pTN2kBCCag3suzm_ArdGSNqOlPy_hmIQW/exec";
-  let prodotti = [];
-  
-  // Variabili globali per gestire il payload del modal condiviso
-  let ordineDaInviare = [];
-  let modalitaInvio = "prenota"; // Può essere "prenota" o "modifica"
+  let prodottiGlobal = [];
+  let payloadTemporaneo = [];
+  let tipoAzione = ""; // "prenota" o "modifica"
 
   const PREZZI = {
       "pistacchio": 19, "nocciola": 19, "fondente": 19, "mandorla": 19, 
@@ -275,352 +254,221 @@ button:hover {
       "frutti di bosco": 17, "jelly limone arancia rossa": 19
   };
 
-  function getPrezzo(nomeProdotto) {
-      const n = nomeProdotto.toLowerCase().trim();
-      for (const [key, price] of Object.entries(PREZZI)) {
-          if (n.includes(key)) return price;
-      }
-      return 0; 
+  function getPrezzo(nome) {
+      const n = nome.toLowerCase();
+      for (const [k, v] of Object.entries(PREZZI)) { if (n.includes(k)) return v; }
+      return 0;
   }
 
-  async function caricaProdotti() {
+  // Caricamento Iniziale
+  async function caricaDati() {
     try {
       const res = await fetch(scriptUrl + "?action=read");
-      const data = await res.json();
-      prodotti = data;
-      mostraTabella();
-
-      const salvato = localStorage.getItem("famiglia");
-      if (salvato) document.getElementById("nome").value = salvato;
-    } catch (e) {
-      alert("Errore nel caricamento dei dati: " + e.message);
-    } 
+      prodottiGlobal = await res.json();
+      renderizzaTabellaPrincipale();
+      const fav = localStorage.getItem("famiglia");
+      if (fav) document.getElementById("nome").value = fav;
+    } catch (e) { alert("Errore caricamento: " + e.message); }
   }
 
- function mostraTabella() {
-  // Aggiunto contenitore .table-wrapper e proporzioni colonne migliorate
-  let html = `<div class="table-wrapper">
-                <table>
-                  <tr>
-                    <th style="width: 25%; text-align: left;">Prodotto</th>
-                    <th style="width: 10%;">Disp.</th>
-                    <th style="width: 20%;">Qtà</th>
-                    <th style="width: 45%;">Nota</th>
-                  </tr>`; 
-                  
-  prodotti.forEach((p, i) => {
-    html += `<tr>
-                <td style="text-align: left; font-weight: 500;">${p.tipo}</td>
-                <td><strong>${p.giacenza}</strong></td>
-                <td>${
-                  p.giacenza <= 0
-                    ? '<span style="color:red; font-weight:bold; font-size: 0.8rem;">Sold Out</span>'
-                    : `<input type="number" id="quantita-${i}" min="0" max="${p.giacenza}" />`
-                }</td>
-                <td> 
-                  <input type="text" id="nota-${i}" placeholder="Es: 1 Mario" />
-                </td> 
-              </tr>`;
-  });
-  html += "</table></div>";
-  document.getElementById("prodotti").innerHTML = html;
-}
+  function renderizzaTabellaPrincipale() {
+    let html = `<div class="table-wrapper">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th class="col-prod">Prodotto</th>
+                        <th class="col-disp">Disp.</th>
+                        <th class="col-qta">Quantità</th>
+                        <th class="col-nota">Nota (Chi?)</th>
+                      </tr>
+                    </thead>
+                    <tbody>`;
+    prodottiGlobal.forEach((p, i) => {
+      html += `<tr>
+                <td class="col-prod" style="font-weight:600;">${p.tipo}</td>
+                <td class="col-disp">${p.giacenza}</td>
+                <td class="col-qta">
+                  ${p.giacenza > 0 ? `<input type="number" id="qta-${i}" min="0" max="${p.giacenza}" placeholder="0">` : `<span style="color:red; font-size:0.7rem;">FINITO</span>`}
+                </td>
+                <td class="col-nota">
+                  <input type="text" id="nota-${i}" placeholder="Es: 1 Mario">
+                </td>
+               </tr>`;
+    });
+    html += `</tbody></table></div>`;
+    document.getElementById("lista-prodotti").innerHTML = html;
+  }
 
- function confermaOrdine() {
-  const nome = document.getElementById("nome").value.trim();
-  if (!nome) return alert("Seleziona il nome della tua famiglia.");
+  // Logica Prenotazione
+  function confermaOrdine() {
+    const nomeFamiglia = document.getElementById("nome").value;
+    if (!nomeFamiglia) return alert("Seleziona la famiglia!");
+    localStorage.setItem("famiglia", nomeFamiglia);
 
-  localStorage.setItem("famiglia", nome);
+    const ordine = [];
+    prodottiGlobal.forEach((p, i) => {
+      const q = parseInt(document.getElementById(`qta-${i}`)?.value) || 0;
+      const n = document.getElementById(`nota-${i}`)?.value.trim() || "";
+      if (q > 0) {
+        if (!n) { alert(`Inserisci una nota per ${p.tipo}`); throw "Stop"; }
+        ordine.push({ nome: nomeFamiglia, prodotto: p.tipo, quantita: q, nota: n });
+      }
+    });
 
-  const ordine = [];
-  for (let i = 0; i < prodotti.length; i++) {
-    const p = prodotti[i];
-    const inputQty = document.getElementById(`quantita-${i}`);
-    const inputNota = document.getElementById(`nota-${i}`); 
+    if (ordine.length === 0) return;
+
+    tipoAzione = "prenota";
+    payloadTemporaneo = ordine;
     
-    if (!inputQty) continue;
-
-    const qty = parseInt(inputQty.value) || 0;
-    const nota = inputNota ? inputNota.value.trim() : ""; 
-
-    if (qty > p.giacenza) {
-      alert(`Attenzione: la giacenza del prodotto "${p.tipo}" è inferiore alla richiesta.`);
-      return;
-    }
-    if (qty > 0 && !nota) {
-      alert(`⚠️ È obbligatorio specificare una nota per il prodotto "${p.tipo}".`);
-      return;
-    }
-
-    if (qty > 0) {
-      ordine.push({ nome, prodotto: p.tipo, quantita: qty, nota: nota });
-    }
+    let text = `Famiglia: ${nomeFamiglia}\n\n`;
+    ordine.forEach(o => text += `• ${o.prodotto}: ${o.quantita} (${o.nota})\n`);
+    
+    apriModalConferma("Conferma Nuova Prenotazione", text);
   }
 
-  if (ordine.length === 0) return alert("Nessun prodotto selezionato.");
+  // Riepilogo Famiglia (Schermo Pieno)
+  async function mostraRiepilogoPrenotazioni() {
+    const fam = document.getElementById("nome").value;
+    if (!fam) return alert("Seleziona la famiglia!");
 
-  let riepilogo = `Famiglia: ${nome}\n\n`;
-  ordine.forEach(o => {
-    riepilogo += `- ${o.prodotto}: ${o.quantita} (Nota: ${o.nota})\n`;
-  });
+    const cont = document.getElementById("contenuto-riepilogo");
+    cont.innerHTML = `<div class="spinner"></div> Caricamento...`;
+    document.getElementById("modal-riepilogo").style.display = "flex";
 
-  // Prepariamo i dati per il Modal condiviso
-  modalitaInvio = "prenota";
-  ordineDaInviare = ordine;
-  
-  document.getElementById("titoloModal").innerText = "Conferma Ordine";
-  document.getElementById("riepilogoModal").innerText = riepilogo;
-  document.getElementById("modal").style.display = "flex";
-}
+    try {
+      const res = await fetch(`${scriptUrl}?action=riepilogo&nominativo=${encodeURIComponent(fam)}`);
+      const data = await res.json();
+      
+      let html = `<div style="background:#e8f5e9; padding:10px; border-radius:8px; margin-bottom:15px;">
+                    <strong>${fam}</strong><br>Totale prodotti: ${data.totaleProdotti}
+                  </div>`;
+      
+      html += `<div class="table-wrapper">
+                <table style="width:100%; font-size:1.1rem;">
+                  <tr style="background:#2e7d32; color:white;">
+                    <th style="text-align:left; padding:12px;">Prodotto</th>
+                    <th style="width:30%;">Qtà</th>
+                  </tr>`;
+      
+      data.riepilogoArray.filter(x => x.valore > 0).forEach(item => {
+        html += `<tr>
+                  <td style="text-align:left; padding:12px;">${item.prodotto}</td>
+                  <td style="font-weight:bold; font-size:1.3rem;">${item.valore}</td>
+                 </tr>`;
+      });
+      html += `</table></div>`;
+      html += `<h3 style="text-align:right; color:#2e7d32;">Totale: € ${data.totaleDaPagare}</h3>`;
+      html += `<button class="btn-dark" onclick="mostraDettaglioPerPersone()">Dettaglio per Singola Persona</button>`;
+      
+      cont.innerHTML = html;
+    } catch (e) { cont.innerHTML = "Errore: " + e.message; }
+  }
+
+  // Dettaglio Persone (Con fix linea verde)
+  async function mostraDettaglioPerPersone() {
+    document.getElementById("modal-riepilogo").style.display = "none";
+    const fam = document.getElementById("nome").value;
+    const cont = document.getElementById("contenuto-dettaglio");
+    cont.innerHTML = `<div class="spinner"></div> Caricamento dettagli...`;
+    document.getElementById("modal-dettaglio-persone").style.display = "flex";
+
+    try {
+      const res = await fetch(`${scriptUrl}?action=dettaglio&nominativo=${encodeURIComponent(fam)}`);
+      const persone = await res.json();
+      
+      let html = "";
+      persone.forEach((pers, pIdx) => {
+        html += `<div class="card-persona">
+                  <h4>👤 ${pers.nominativo}</h4>
+                  <div class="table-wrapper">
+                    <table style="width:100%;">
+                      <tr style="font-size:0.8rem; background:#f0f0f0;">
+                        <th style="color:black; background:#eee; text-align:left;">Prodotto</th>
+                        <th style="color:black; background:#eee; width:15%;">Att.</th>
+                        <th style="color:green; background:#eee; width:20%;">+</th>
+                        <th style="color:red; background:#eee; width:20%;">-</th>
+                      </tr>`;
+        
+        for (const [prod, qta] of Object.entries(pers.prodotti)) {
+          html += `<tr>
+                    <td style="text-align:left;">${prod}</td>
+                    <td><strong>${qta}</strong></td>
+                    <td><input type="number" class="in-add" data-pers="${pers.nominativo}" data-prod="${prod}" value="0" min="0"></td>
+                    <td><input type="number" class="in-sub" data-pers="${pers.nominativo}" data-prod="${prod}" value="0" min="0" max="${qta}"></td>
+                   </tr>`;
+        }
+        html += `</table></div></div>`;
+      });
+      cont.innerHTML = html || "Nessun dato trovato.";
+    } catch (e) { cont.innerHTML = "Errore: " + e.message; }
+  }
+
+  // Conferma Modifiche
+  function preparaModificaDettaglio() {
+    const fam = document.getElementById("nome").value;
+    const modifiche = [];
+    let riepilogoTesto = `⚠️ MODIFICA ORDINI ESISTENTI\nFamiglia: ${fam}\n\n`;
+
+    document.querySelectorAll(".card-persona").forEach(card => {
+        const inAdds = card.querySelectorAll(".in-add");
+        const inSubs = card.querySelectorAll(".in-sub");
+
+        inAdds.forEach((el, i) => {
+            const add = parseInt(el.value) || 0;
+            const sub = parseInt(inSubs[i].value) || 0;
+            const netto = add - sub;
+
+            if (netto !== 0) {
+                const prod = el.dataset.prod;
+                const pers = el.dataset.pers;
+                modifiche.push({
+                    nome: fam,
+                    prodotto: prod,
+                    quantita: netto,
+                    nota: `${netto > 0 ? 'Aggiunta' : 'Sottrazione'} da ${pers} (Dettaglio)`
+                });
+                riepilogoTesto += `• ${pers} | ${prod}: ${netto > 0 ? '+' : ''}${netto}\n`;
+            }
+        });
+    });
+
+    if (modifiche.length === 0) return alert("Nessuna modifica inserita.");
+    
+    tipoAzione = "modifica";
+    payloadTemporaneo = modifiche;
+    apriModalConferma("Conferma Modifiche", riepilogoTesto);
+  }
+
+  // Gestione Modal Universale
+  function apriModalConferma(titolo, testo) {
+    document.getElementById("titoloModal").innerText = titolo;
+    document.getElementById("riepilogoCorpo").innerText = testo;
+    document.getElementById("modal").style.display = "flex";
+  }
 
   function chiudiModal() {
     document.getElementById("modal").style.display = "none";
     document.getElementById("messaggioAttesa").style.display = "none";
   }
 
-  // --- FUNZIONE UNIFICATA PER INVIO DATI DAL MODAL ---
   async function eseguiOperazioneBackend() {
-    const attesa = document.getElementById("messaggioAttesa");
-    attesa.style.display = "block";
+    document.getElementById("messaggioAttesa").style.display = "block";
     try {
       const res = await fetch(scriptUrl, {
         method: "POST",
-        body: JSON.stringify({ action: "prenota", ordine: ordineDaInviare })
+        body: JSON.stringify({ action: "prenota", ordine: payloadTemporaneo })
       });
-      await res.json();
-      
-      if (modalitaInvio === "prenota") {
-          alert("✅ Ordine inviato con successo!");
-      } else {
-          alert("✅ Modifiche registrate con successo!");
-          document.getElementById('modal-dettaglio-persone').style.display = "none";
-      }
-      
-      chiudiModal();
-      caricaProdotti();
+      const result = await res.json();
+      alert("✅ Operazione completata!");
+      location.reload(); // Ricarica per aggiornare tutto
     } catch (e) {
-      alert("Errore durante l'operazione: " + e.message);
-    } finally {
-      attesa.style.display = "none";
+      alert("Errore: " + e.message);
+      document.getElementById("messaggioAttesa").style.display = "none";
     }
   }
 
-  // --- RIEPILOGO CON TABELLA ALLARGATA ---
-  async function mostraRiepilogoPrenotazioni() {
-    const nominativo = document.getElementById('nome').value.trim();
-    if (!nominativo) return alert("Seleziona prima un nominativo.");
-
-    const spinner = document.getElementById("spinner-riepilogo");
-    const contenuto = document.getElementById("contenuto-riepilogo");
-    contenuto.innerHTML = ""; 
-    spinner.style.display = "block";
-    document.getElementById('modal-riepilogo').style.display = "flex";
-
-    try {
-      const url = scriptUrl + "?action=riepilogo&nominativo=" + encodeURIComponent(nominativo);
-      const res = await fetch(url);
-      const data = await res.json();
-      
-      spinner.style.display = "none";
-      const prenotazioniAttive = data.riepilogoArray.filter(item => item.valore > 0);
-
-      if (!prenotazioniAttive.length) {
-        contenuto.innerHTML = `<p style="margin:0 15px;">Nessuna prenotazione attiva per ${nominativo}.</p>`;
-        contenuto.innerHTML += `<div style="margin: 0 15px;"><button onclick="document.getElementById('modal-riepilogo').style.display='none'" style="background-color: #6c757d;">Chiudi</button></div>`;
-        return;
-      }
-
-      let html = `<p style="font-size: 0.9rem; margin: 0 15px 10px;">Riepilogo <strong>${nominativo}</strong>:</p>`;
-      
-      // Tabella a tutto schermo con font più grandi
-      html += `<div class="table-wrapper" style="margin: 0 15px; width: calc(100% - 30px);">
-                <table style="width: 100%; font-size: 1.15rem;">
-                  <tr>
-                    <th style="text-align: left; padding: 12px;">Prodotto</th>
-                    <th style="text-align: center; padding: 12px; width: 40%;">Prenotati</th>
-                  </tr>`;
-      
-      prenotazioniAttive.forEach((item) => {
-        html += `<tr>
-                   <td style="text-align: left; padding: 10px;">${item.prodotto}</td>
-                   <td style="padding: 10px; font-size: 1.3rem;"><strong>${item.valore}</strong></td>
-                 </tr>`;
-      });
-      
-      html += `</table></div>`;
-
-      html += `<div style="margin: 15px; padding: 12px; background-color: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 8px; text-align: right;">
-                 <p style="margin: 0; font-size: 1.1rem; color: #0a1a3f;">Totale Ordini: <strong>${data.totaleProdotti}</strong></p>
-                 <p style="margin: 5px 0 0 0; font-size: 1.3rem; color: #2e7d32; font-weight: bold;">Da Pagare: € ${data.totaleDaPagare}</p>
-               </div>`;
-      
-      html += `<div style="display: flex; justify-content: space-between; gap: 10px; margin: 15px; flex-wrap: wrap;">`
-      html += `<button onclick="mostraDettaglioPerPersone(true)" style="flex-grow: 1; background-color: #0a1a3f;">Dettaglio Persone</button>`;
-      html += `<button onclick="document.getElementById('modal-riepilogo').style.display='none'" style="flex-grow: 1; background-color: #6c757d;">Chiudi</button>`;
-      html += `</div>`;
-
-      contenuto.innerHTML = html;
-
-    } catch (err) {
-      spinner.style.display = "none";
-      contenuto.innerHTML = `<p style="margin:15px;">Errore: ${err.message}</p>`;
-    }
-  }
-
-  // --- DETTAGLIO PERSONE CON LINEE SISTEMATE ---
-  async function mostraDettaglioPerPersone(chiudiRiepilogo = false) { 
-    const nominativo = document.getElementById('nome').value.trim();
-    if (!nominativo) return alert("Seleziona prima un nominativo.");
-
-    if (chiudiRiepilogo) {
-      document.getElementById('modal-riepilogo').style.display = "none";
-    }
-
-    const spinner = document.getElementById("spinner-dettaglio");
-    const contenuto = document.getElementById("contenuto-dettaglio");
-    const modal = document.getElementById('modal-dettaglio-persone');
-    
-    contenuto.innerHTML = ""; 
-    document.getElementById('pulsanti-dettaglio').style.display = 'flex'; 
-    spinner.style.display = "block";
-    modal.style.display = "flex";
-
-    try {
-        const url = scriptUrl + "?action=dettaglio&nominativo=" + encodeURIComponent(nominativo);
-        const res = await fetch(url);
-        const dettaglioFamiglia = await res.json();
-        
-        spinner.style.display = "none";
-        
-        if (!dettaglioFamiglia.length) {
-            contenuto.innerHTML = `<p style="margin:0 15px;">Nessun ordine consolidato trovato.</p>`;
-            document.getElementById('pulsanti-dettaglio').style.display = 'none';
-            contenuto.innerHTML += `<div style="margin:0 15px;"><br><button onclick="document.getElementById('modal-dettaglio-persone').style.display='none'" style="margin-top:10px; background-color: #6c757d;">Chiudi</button></div>`;
-            return;
-        }
-
-        const ordineProdotti = prodotti.map(p => p.tipo.trim());
-        let html = ``;
-
-        dettaglioFamiglia.forEach((persona, pIdx) => {
-            const nomePersona = persona.nominativo;
-            let totaleEuroPersona = 0;
-
-            html += `<div class="dettaglio-persona">`;
-            html += `<h5>👤 ${nomePersona}</h5>`;
-            
-            // Aggiunto contenitore table-wrapper per estendere linee e background al 100%
-            html += `<div class="table-wrapper">
-                      <table style="width: 100%;">
-                        <tr>
-                            <th style="text-align: left; width: 40%;">Prodotto</th>
-                            <th style="width: 15%;">Att.</th>
-                            <th style="color: #2e7d32; width: 22%;">Agg.</th>
-                            <th style="color: #d32f2f; width: 22%;">Elim.</th>
-                        </tr>`;
-            
-            const prodottiPersona = Object.keys(persona.prodotti).sort((a, b) => {
-                const idxA = ordineProdotti.indexOf(a);
-                const idxB = ordineProdotti.indexOf(b);
-                if (idxA === -1 && idxB === -1) return a.localeCompare(b);
-                if (idxA === -1) return 1;
-                if (idxB === -1) return -1;
-                return idxA - idxB;
-            });
-
-            prodottiPersona.forEach(prodottoNome => {
-                const quantita = persona.prodotti[prodottoNome];
-                const prezzoSingolo = getPrezzo(prodottoNome);
-                totaleEuroPersona += (quantita * prezzoSingolo);
-
-                html += `<tr>
-                            <td style="text-align: left;">${prodottoNome}</td>
-                            <td><strong>${quantita}</strong></td>
-                            <td>
-                                <input type="number" id="aggiungi-${pIdx}-${prodottoNome.replace(/\s/g, '_')}" 
-                                       min="0" value="0" class="input-aggiungi"
-                                       data-prodotto="${prodottoNome}"
-                                       data-persona="${nomePersona}" />
-                            </td>
-                            <td>
-                                <input type="number" id="elimina-${pIdx}-${prodottoNome.replace(/\s/g, '_')}" 
-                                       min="0" max="${quantita}" value="0" class="input-elimina"
-                                       data-prodotto="${prodottoNome}"
-                                       data-persona="${nomePersona}" />
-                            </td>
-                         </tr>`;
-            });
-            html += `</table></div>`;
-            html += `<div style="text-align: right; margin-top: 10px; font-weight: bold; font-size: 1.1rem; color: #0a1a3f;">
-                        Totale: € ${totaleEuroPersona}
-                     </div>`;
-            html += `</div>`;
-        });
-        
-        contenuto.innerHTML = html;
-
-    } catch (err) {
-        spinner.style.display = "none";
-        contenuto.innerHTML = `<p style="margin:15px;">Errore: ${err.message}</p>`;
-    }
-  }
-
-// --- PREPARAZIONE MODIFICHE CON RIUTILIZZO DEL MODAL ---
-function preparaModificaDettaglio() {
-    const nomeFamiglia = document.getElementById("nome").value.trim();
-    const modificheDaInviare = [];
-    let modificheTotali = 0;
-
-    const inputsAggiungi = document.querySelectorAll('.input-aggiungi');
-    const inputsElimina = document.querySelectorAll('.input-elimina');
-
-    inputsAggiungi.forEach((inputAgg, idx) => {
-        const inputElimina = inputsElimina[idx];
-        
-        const qtaAggiungi = parseInt(inputAgg.value) || 0;
-        const qtaElimina = parseInt(inputElimina.value) || 0;
-        
-        const variazioneNetta = qtaAggiungi - qtaElimina;
-        
-        if (variazioneNetta !== 0) {
-            const prodotto = inputAgg.getAttribute('data-prodotto');
-            const nomePersona = inputAgg.getAttribute('data-persona');
-            
-            const azione = variazioneNetta > 0 ? "Aggiunta" : "Sottrazione";
-            const notaAutomatica = `${azione} da ${nomePersona} (Dettaglio)`;
-
-            modificheDaInviare.push({
-                nome: nomeFamiglia,
-                prodotto: prodotto,
-                quantita: variazioneNetta,
-                nota: notaAutomatica
-            });
-            modificheTotali++;
-        }
-    });
-
-    if (modificheTotali === 0) {
-        alert("Nessuna quantità inserita da aggiungere o eliminare.");
-        return;
-    }
-    
-    // Costruiamo il testo di riepilogo
-    let testoRiepilogo = `Famiglia: ${nomeFamiglia}\n\nModifiche richieste:\n`;
-    modificheDaInviare.forEach(m => {
-        const segno = m.quantita > 0 ? "+" : "";
-        testoRiepilogo += `- ${m.prodotto}: ${segno}${m.quantita} (${m.nota})\n`;
-    });
-
-    // Impostiamo il payload per la funzione di invio unificata
-    modalitaInvio = "modifica";
-    ordineDaInviare = modificheDaInviare;
-    
-    document.getElementById("titoloModal").innerText = "Conferma Modifiche";
-    document.getElementById("riepilogoModal").innerText = testoRiepilogo;
-    document.getElementById("modal").style.display = "flex";
-}
-  
-  window.onload = caricaProdotti;
+  window.onload = caricaDati;
 </script>
+
 </body>
 </html>
