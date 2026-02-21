@@ -17,7 +17,7 @@ body {
 }
 
 #modal-riepilogo > div, #modal-dettaglio-persone > div {
-    max-height: 80vh;
+    max-height: 85vh;
     overflow-y: auto;
     padding: 15px; 
     max-width: 95%; 
@@ -70,35 +70,45 @@ select, input[type="number"], input[type="text"], button {
     box-sizing: border-box;
 }
 
-table {
-    display: block; 
-    overflow-x: auto;
-    white-space: nowrap; 
+/* --- TABELLE RESPONSIVE --- */
+.table-wrapper {
     width: 100%;
-    border-collapse: collapse;
-    background-color: white;
+    overflow-x: auto; /* Permette lo scroll solo se necessario */
     margin-top: 1rem;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0, 128, 0, 0.2);
+    background-color: white;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    table-layout: auto; 
 }
 th, td {
-    padding: 0.5rem; 
-    font-size: 0.9rem; 
+    padding: 0.6rem 0.3rem; 
+    font-size: 0.95rem; 
     text-align: center;
     border-bottom: 1px solid #e0f2f1;
+    word-wrap: break-word; /* Permette ai testi lunghi di andare a capo */
 }
 th {
     background-color: #a5d6a7;
     color: white;
 }
-td input[type="number"], td input[type="text"] {
+td input[type="number"] {
     max-width: 60px; 
     box-sizing: border-box;
     margin: 0;
     padding: 0.3rem;
 }
 td input[type="text"] {
-    max-width: 100px; 
+    width: 100%; /* La nota si prende tutto lo spazio possibile */
+    min-width: 90px;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0.3rem;
 }
 
 button {
@@ -160,10 +170,6 @@ button:hover {
         margin-right: auto;
         display: block;
     }
-    table {
-        display: table; 
-        white-space: normal;
-    }
 }
 </style>
 </head>
@@ -196,7 +202,7 @@ button:hover {
 
 <header>
   <img src="logo.png" alt="Logo" />
-  <h2>WebApp Versione Beta2</h2>
+  <h2>WebApp Versione Beta3</h2>
 </header>
 
 <label for="nome">Seleziona Famiglia di Padrini:</label>
@@ -219,13 +225,13 @@ button:hover {
 
 <div id="modal">
   <div id="modal-content">
-    <h3>Conferma ordine</h3>
-    <pre id="riepilogoModal" style="white-space: pre-wrap; font-family: monospace; font-size: 0.9rem;"></pre>
+    <h3 id="titoloModal">Conferma ordine</h3>
+    <pre id="riepilogoModal" style="white-space: pre-wrap; font-family: monospace; font-size: 0.95rem; line-height: 1.4;"></pre>
     <div id="messaggioAttesa" style="display:none;color:#2e7d32;font-weight:bold;">
-      ⏳ Attendi, il tuo ordine sta per essere processato... <span class="spinner"></span>
+      ⏳ Attendi, operazione in corso... <span class="spinner"></span>
     </div>
     <div style="display: flex; gap: 10px;">
-        <button onclick="inviaOrdine()">Conferma</button>
+        <button onclick="eseguiOperazioneBackend()">Conferma</button>
         <button onclick="chiudiModal()" style="background-color: #6c757d;">Annulla</button>
     </div>
   </div>
@@ -249,7 +255,7 @@ button:hover {
     </div>
     <div id="contenuto-dettaglio" style="white-space: pre-wrap;"></div>
     <div id="pulsanti-dettaglio" style="display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin: 0 15px;">
-      <button id="btnApplicaModifiche" onclick="inviaModificaDettaglio()" style="flex-grow: 1; background-color: #2e7d32;">Applica Modifiche</button>
+      <button onclick="preparaModificaDettaglio()" style="flex-grow: 1; background-color: #2e7d32;">Applica Modifiche</button>
       <button onclick="document.getElementById('modal-dettaglio-persone').style.display='none'" style="flex-grow: 1; background-color: #6c757d;">Chiudi</button>
     </div>
   </div>
@@ -258,22 +264,17 @@ button:hover {
 <script>
   const scriptUrl = "https://script.google.com/macros/s/AKfycbxEDGWC2lozKekZlR1dvIY2_3OZYdPb81-pTN2kBCCag3suzm_ArdGSNqOlPy_hmIQW/exec";
   let prodotti = [];
+  
+  // Variabili globali per gestire il payload del modal condiviso
   let ordineDaInviare = [];
+  let modalitaInvio = "prenota"; // Può essere "prenota" o "modifica"
 
-  // Configurazione Prezzi Prodotti
   const PREZZI = {
-      "pistacchio": 19,
-      "nocciola": 19,
-      "fondente": 19,
-      "mandorla": 19,
-      "caffe": 19,
-      "pera ciocco": 17,
-      "arancia candita": 17,
-      "frutti di bosco": 17,
-      "jelly limone arancia rossa": 19
+      "pistacchio": 19, "nocciola": 19, "fondente": 19, "mandorla": 19, 
+      "caffe": 19, "pera ciocco": 17, "arancia candita": 17, 
+      "frutti di bosco": 17, "jelly limone arancia rossa": 19
   };
 
-  // Funzione per cercare il prezzo basata sul nome del prodotto (ignora case e spazi extra)
   function getPrezzo(nomeProdotto) {
       const n = nomeProdotto.toLowerCase().trim();
       for (const [key, price] of Object.entries(PREZZI)) {
@@ -297,10 +298,19 @@ button:hover {
   }
 
  function mostraTabella() {
-  let html = "<table><tr><th>Prodotto</th><th>Disp.</th><th>Qtà</th><th>Nota</th></tr>"; 
+  // Aggiunto contenitore .table-wrapper e proporzioni colonne migliorate
+  let html = `<div class="table-wrapper">
+                <table>
+                  <tr>
+                    <th style="width: 25%; text-align: left;">Prodotto</th>
+                    <th style="width: 10%;">Disp.</th>
+                    <th style="width: 20%;">Qtà</th>
+                    <th style="width: 45%;">Nota</th>
+                  </tr>`; 
+                  
   prodotti.forEach((p, i) => {
     html += `<tr>
-                <td>${p.tipo}</td>
+                <td style="text-align: left; font-weight: 500;">${p.tipo}</td>
                 <td><strong>${p.giacenza}</strong></td>
                 <td>${
                   p.giacenza <= 0
@@ -312,7 +322,7 @@ button:hover {
                 </td> 
               </tr>`;
   });
-  html += "</table>";
+  html += "</table></div>";
   document.getElementById("prodotti").innerHTML = html;
 }
 
@@ -354,7 +364,11 @@ button:hover {
     riepilogo += `- ${o.prodotto}: ${o.quantita} (Nota: ${o.nota})\n`;
   });
 
+  // Prepariamo i dati per il Modal condiviso
+  modalitaInvio = "prenota";
   ordineDaInviare = ordine;
+  
+  document.getElementById("titoloModal").innerText = "Conferma Ordine";
   document.getElementById("riepilogoModal").innerText = riepilogo;
   document.getElementById("modal").style.display = "flex";
 }
@@ -364,7 +378,8 @@ button:hover {
     document.getElementById("messaggioAttesa").style.display = "none";
   }
 
-  async function inviaOrdine() {
+  // --- FUNZIONE UNIFICATA PER INVIO DATI DAL MODAL ---
+  async function eseguiOperazioneBackend() {
     const attesa = document.getElementById("messaggioAttesa");
     attesa.style.display = "block";
     try {
@@ -373,17 +388,24 @@ button:hover {
         body: JSON.stringify({ action: "prenota", ordine: ordineDaInviare })
       });
       await res.json();
-      alert("✅ Ordine inviato con successo!");
+      
+      if (modalitaInvio === "prenota") {
+          alert("✅ Ordine inviato con successo!");
+      } else {
+          alert("✅ Modifiche registrate con successo!");
+          document.getElementById('modal-dettaglio-persone').style.display = "none";
+      }
+      
       chiudiModal();
       caricaProdotti();
     } catch (e) {
-      alert("Errore invio ordine: " + e.message);
+      alert("Errore durante l'operazione: " + e.message);
     } finally {
       attesa.style.display = "none";
     }
   }
 
-  // --- RIEPILOGO SENZA ANNULLAMENTO + TOTALI ---
+  // --- RIEPILOGO CON TABELLA ALLARGATA ---
   async function mostraRiepilogoPrenotazioni() {
     const nominativo = document.getElementById('nome').value.trim();
     if (!nominativo) return alert("Seleziona prima un nominativo.");
@@ -410,22 +432,23 @@ button:hover {
 
       let html = `<p style="font-size: 0.9rem; margin: 0 15px 10px;">Riepilogo <strong>${nominativo}</strong>:</p>`;
       
-      html += `<table>
+      // Tabella a tutto schermo con font più grandi
+      html += `<div class="table-wrapper" style="margin: 0 15px; width: calc(100% - 30px);">
+                <table style="width: 100%; font-size: 1.15rem;">
                   <tr>
-                    <th>Prodotto</th>
-                    <th>Prenotati</th>
+                    <th style="text-align: left; padding: 12px;">Prodotto</th>
+                    <th style="text-align: center; padding: 12px; width: 40%;">Prenotati</th>
                   </tr>`;
       
       prenotazioniAttive.forEach((item) => {
         html += `<tr>
-                   <td>${item.prodotto}</td>
-                   <td><strong>${item.valore}</strong></td>
+                   <td style="text-align: left; padding: 10px;">${item.prodotto}</td>
+                   <td style="padding: 10px; font-size: 1.3rem;"><strong>${item.valore}</strong></td>
                  </tr>`;
       });
       
-      html += `</table>`;
+      html += `</table></div>`;
 
-      // Sezione Totali presa dal Backend
       html += `<div style="margin: 15px; padding: 12px; background-color: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 8px; text-align: right;">
                  <p style="margin: 0; font-size: 1.1rem; color: #0a1a3f;">Totale Ordini: <strong>${data.totaleProdotti}</strong></p>
                  <p style="margin: 5px 0 0 0; font-size: 1.3rem; color: #2e7d32; font-weight: bold;">Da Pagare: € ${data.totaleDaPagare}</p>
@@ -444,7 +467,7 @@ button:hover {
     }
   }
 
-  // --- DETTAGLIO PERSONE CON AGGIUNGI/ELIMINA E ORDINATO ---
+  // --- DETTAGLIO PERSONE CON LINEE SISTEMATE ---
   async function mostraDettaglioPerPersone(chiudiRiepilogo = false) { 
     const nominativo = document.getElementById('nome').value.trim();
     if (!nominativo) return alert("Seleziona prima un nominativo.");
@@ -476,9 +499,7 @@ button:hover {
             return;
         }
 
-        // Creiamo l'array di riferimento per l'ordinamento (usando i dati già caricati di giacenza)
         const ordineProdotti = prodotti.map(p => p.tipo.trim());
-
         let html = ``;
 
         dettaglioFamiglia.forEach((persona, pIdx) => {
@@ -487,15 +508,17 @@ button:hover {
 
             html += `<div class="dettaglio-persona">`;
             html += `<h5>👤 ${nomePersona}</h5>`;
-            html += `<table>
+            
+            // Aggiunto contenitore table-wrapper per estendere linee e background al 100%
+            html += `<div class="table-wrapper">
+                      <table style="width: 100%;">
                         <tr>
-                            <th>Prodotto</th>
-                            <th>Att.</th>
-                            <th style="color: #2e7d32;">Agg.</th>
-                            <th style="color: #d32f2f;">Elim.</th>
+                            <th style="text-align: left; width: 40%;">Prodotto</th>
+                            <th style="width: 15%;">Att.</th>
+                            <th style="color: #2e7d32; width: 22%;">Agg.</th>
+                            <th style="color: #d32f2f; width: 22%;">Elim.</th>
                         </tr>`;
             
-            // Ordina le chiavi dei prodotti di questa persona secondo l'array di giacenza
             const prodottiPersona = Object.keys(persona.prodotti).sort((a, b) => {
                 const idxA = ordineProdotti.indexOf(a);
                 const idxB = ordineProdotti.indexOf(b);
@@ -511,7 +534,7 @@ button:hover {
                 totaleEuroPersona += (quantita * prezzoSingolo);
 
                 html += `<tr>
-                            <td>${prodottoNome}</td>
+                            <td style="text-align: left;">${prodottoNome}</td>
                             <td><strong>${quantita}</strong></td>
                             <td>
                                 <input type="number" id="aggiungi-${pIdx}-${prodottoNome.replace(/\s/g, '_')}" 
@@ -527,7 +550,7 @@ button:hover {
                             </td>
                          </tr>`;
             });
-            html += `</table>`;
+            html += `</table></div>`;
             html += `<div style="text-align: right; margin-top: 10px; font-weight: bold; font-size: 1.1rem; color: #0a1a3f;">
                         Totale: € ${totaleEuroPersona}
                      </div>`;
@@ -542,10 +565,9 @@ button:hover {
     }
   }
 
-async function inviaModificaDettaglio() {
+// --- PREPARAZIONE MODIFICHE CON RIUTILIZZO DEL MODAL ---
+function preparaModificaDettaglio() {
     const nomeFamiglia = document.getElementById("nome").value.trim();
-    const btn = document.getElementById("btnApplicaModifiche");
-    
     const modificheDaInviare = [];
     let modificheTotali = 0;
 
@@ -558,7 +580,6 @@ async function inviaModificaDettaglio() {
         const qtaAggiungi = parseInt(inputAgg.value) || 0;
         const qtaElimina = parseInt(inputElimina.value) || 0;
         
-        // Calcolo della modifica netta finale
         const variazioneNetta = qtaAggiungi - qtaElimina;
         
         if (variazioneNetta !== 0) {
@@ -583,30 +604,21 @@ async function inviaModificaDettaglio() {
         return;
     }
     
-    if (!confirm(`Sei sicuro di voler inviare le modifiche richieste?`)) return;
+    // Costruiamo il testo di riepilogo
+    let testoRiepilogo = `Famiglia: ${nomeFamiglia}\n\nModifiche richieste:\n`;
+    modificheDaInviare.forEach(m => {
+        const segno = m.quantita > 0 ? "+" : "";
+        testoRiepilogo += `- ${m.prodotto}: ${segno}${m.quantita} (${m.nota})\n`;
+    });
 
-    btn.disabled = true;
-    btn.innerHTML = 'Invio... <span class="spinner" style="border-color:white;border-top-color:transparent;"></span>';
-
-    try {
-        const res = await fetch(scriptUrl, {
-            method: "POST",
-            body: JSON.stringify({ action: "prenota", ordine: modificheDaInviare })
-        });
-        await res.json();
-        
-        alert("✅ Modifiche registrate!");
-        
-        document.getElementById('modal-dettaglio-persone').style.display = "none";
-        caricaProdotti(); 
-        
-    } catch (e) {
-        alert("Errore invio modifiche: " + e.message);
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = 'Applica Modifiche';
-    }
-  }
+    // Impostiamo il payload per la funzione di invio unificata
+    modalitaInvio = "modifica";
+    ordineDaInviare = modificheDaInviare;
+    
+    document.getElementById("titoloModal").innerText = "Conferma Modifiche";
+    document.getElementById("riepilogoModal").innerText = testoRiepilogo;
+    document.getElementById("modal").style.display = "flex";
+}
   
   window.onload = caricaProdotti;
 </script>
