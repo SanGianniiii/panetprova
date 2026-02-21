@@ -364,7 +364,7 @@ button:hover { background-color: #1b5e20; }
     } catch (e) { cont.innerHTML = "Errore: " + e.message; }
   }
 
-  // Dettaglio Persone (Con fix linea verde)
+  // Dettaglio Persone (CON TOTALE REINSERITO)
   async function mostraDettaglioPerPersone() {
     document.getElementById("modal-riepilogo").style.display = "none";
     const fam = document.getElementById("nome").value;
@@ -378,6 +378,8 @@ button:hover { background-color: #1b5e20; }
       
       let html = "";
       persone.forEach((pers, pIdx) => {
+        let totaleEuroPersona = 0; // Inizializziamo il totale per questa persona
+
         html += `<div class="card-persona">
                   <h4>👤 ${pers.nominativo}</h4>
                   <div class="table-wrapper">
@@ -390,6 +392,10 @@ button:hover { background-color: #1b5e20; }
                       </tr>`;
         
         for (const [prod, qta] of Object.entries(pers.prodotti)) {
+          // Calcolo del prezzo
+          const prezzoUnitario = getPrezzo(prod);
+          totaleEuroPersona += (qta * prezzoUnitario);
+
           html += `<tr>
                     <td style="text-align:left;">${prod}</td>
                     <td><strong>${qta}</strong></td>
@@ -397,12 +403,17 @@ button:hover { background-color: #1b5e20; }
                     <td><input type="number" class="in-sub" data-pers="${pers.nominativo}" data-prod="${prod}" value="0" min="0" max="${qta}"></td>
                    </tr>`;
         }
-        html += `</table></div></div>`;
+        html += `</table></div>`;
+        
+        // REINSERIMENTO DEL TOTALE IN FONDO ALLA CARD
+        html += `<div style="text-align: right; margin-top: 10px; font-weight: bold; font-size: 1.1rem; color: #2e7d32;">
+                    Parziale: € ${totaleEuroPersona}
+                 </div>`;
+        html += `</div>`;
       });
       cont.innerHTML = html || "Nessun dato trovato.";
     } catch (e) { cont.innerHTML = "Errore: " + e.message; }
   }
-
   // Conferma Modifiche
   function preparaModificaDettaglio() {
     const fam = document.getElementById("nome").value;
