@@ -85,17 +85,42 @@ th { background-color: #2e7d32; color: white; font-weight: 600; }
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
-/* --- SCHERMATA ATTENDI RICARICA (NUOVA) --- */
+/* --- SCHERMATA ATTENDI RICARICA --- */
 #loading-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: white;
-    z-index: 50000; /* Sopra tutto */
+    z-index: 50000;
     display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
 }
+
+/* --- MESSAGGIO DI STATO CENTRALE --- */
+#status-message {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px 40px;
+    border-radius: 15px;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-align: center;
+    z-index: 60000; 
+    display: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+.status-success { background-color: #2e7d32; border: 2px solid #1b5e20; }
+.status-error { background-color: #d32f2f; border: 2px solid #b71c1c; }
 
 .card-persona { border: 1px solid #c8e6c9; border-radius: 10px; padding: 10px; margin-bottom: 15px; background-color: #fafafa; }
 .card-persona h4 { margin: 0 0 10px 0; color: #0a1a3f; border-bottom: 2px solid #2e7d32; padding-bottom: 5px; }
@@ -110,7 +135,8 @@ th { background-color: #2e7d32; color: white; font-weight: 600; }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-button { background-color: #2e7d32; color: white; border: none; font-weight: bold; margin-top: 1rem; cursor: pointer; }
+button { background-color: #2e7d32; color: white; border: none; font-weight: bold; margin-top: 1rem; cursor: pointer; transition: background 0.3s; }
+button:hover { background-color: #1b5e20; }
 .btn-secondary { background-color: #6c757d; }
 .btn-dark { background-color: #0a1a3f; }
 </style>
@@ -122,6 +148,8 @@ button { background-color: #2e7d32; color: white; border: none; font-weight: bol
     <h2 style="margin-top: 20px;">Attendi ricarica riepilogo...</h2>
     <p style="color: #666;">Stiamo sincronizzando i tuoi ordini</p>
 </div>
+
+<div id="status-message"></div>
 
 <header>
   <img src="logo.png" alt="Logo" onerror="this.style.display='none'"/>
@@ -202,29 +230,20 @@ button { background-color: #2e7d32; color: white; border: none; font-weight: bol
   }
 
   function renderizzaTabellaPrincipale() {
-    let html = `<div class="table-wrapper">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th class="col-prod">Prodotto</th>
-                        <th class="col-disp">Disp.</th>
-                        <th class="col-qta">Quantità</th>
-                        <th class="col-nota">Nota</th>
-                      </tr>
-                    </thead>
-                    <tbody>`;
+    let html = `<div class="table-wrapper"><table><thead><tr><th class="col-prod">Prodotto</th><th class="col-disp">Disp.</th><th class="col-qta">Quantità</th><th class="col-nota">Nota</th></tr></thead><tbody>`;
     
     prodottiGlobal.forEach((p, i) => {
-      // Verifichiamo se il prodotto è esaurito
       const isEsaurito = p.giacenza <= 0;
+      // Se è esaurito applichiamo uno stile grigetto alla riga per maggiore chiarezza
+      const stileRiga = isEsaurito ? 'background-color: #f9f9f9; color: #999;' : '';
 
-      html += `<tr>
+      html += `<tr style="${stileRiga}">
                 <td class="col-prod" style="font-weight:600;">${p.tipo}</td>
                 <td class="col-disp">${p.giacenza}</td>
                 <td class="col-qta">
                   ${!isEsaurito 
                     ? `<input type="number" id="qta-${i}" min="0" max="${p.giacenza}" placeholder="0">` 
-                    : `<span style="color:red; font-weight:bold; font-size:0.8rem;">SOLD OUT</span>`
+                    : `<span style="color:#d32f2f; font-weight:bold; font-size:0.8rem;">SOLD OUT</span>`
                   }
                 </td>
                 <td class="col-nota">
@@ -237,7 +256,6 @@ button { background-color: #2e7d32; color: white; border: none; font-weight: bol
     document.getElementById("lista-prodotti").innerHTML = html;
   }
 
-// --- 1. LOGICA PRENOTAZIONE PRINCIPALE (CON CONTROLLO OVERBOOKING) ---
   function confermaOrdine() {
     const nomeFamiglia = document.getElementById("nome").value;
     if (!nomeFamiglia) return alert("Seleziona la famiglia!");
@@ -247,7 +265,7 @@ button { background-color: #2e7d32; color: white; border: none; font-weight: bol
     let erroreGiacenza = false;
 
     prodottiGlobal.forEach((p, i) => {
-      if (erroreGiacenza) return; // Se c'è già un errore, salta gli altri
+      if (erroreGiacenza) return;
 
       const qInput = document.getElementById(`qta-${i}`);
       if (!qInput) return;
@@ -256,24 +274,21 @@ button { background-color: #2e7d32; color: white; border: none; font-weight: bol
       const n = document.getElementById(`nota-${i}`)?.value.trim() || "";
       
       if (q > 0) { 
-        // CONTROLLO GIACENZA
         if (q > p.giacenza) {
             alert(`⛔ ATTENZIONE: Quantità per "${p.tipo}" non disponibile.\nHai inserito ${q}, ma sono disponibili solo ${p.giacenza} pezzi.`);
             erroreGiacenza = true;
             return;
         }
-
         if (!n) { 
             alert(`Inserisci una nota (Chi?) per ${p.tipo}`); 
             erroreGiacenza = true;
             return; 
         }
-
         ordine.push({ nome: nomeFamiglia, prodotto: p.tipo, quantita: q, nota: n }); 
       }
     });
 
-    if (erroreGiacenza) return; // Blocca l'apertura del modal se c'è un errore
+    if (erroreGiacenza) return;
     if (ordine.length === 0) return alert("Nessun prodotto selezionato.");
     
     payloadTemporaneo = ordine;
@@ -285,13 +300,11 @@ button { background-color: #2e7d32; color: white; border: none; font-weight: bol
     document.getElementById("modal").style.display = "flex";
   }
 
-  // --- 2. LOGICA MODIFICHE DETTAGLIO (CON CONTROLLO OVERBOOKING INCROCIATO) ---
   function preparaModificaDettaglio() {
     const fam = document.getElementById("nome").value;
     const modifiche = [];
     let riepilogoTesto = `⚠️ MODIFICA ESISTENTE\n\n`;
     
-    // Oggetto per tenere traccia della somma totale richiesta per ogni prodotto
     const variazioniTotali = {};
 
     document.querySelectorAll(".card-persona").forEach(card => {
@@ -307,9 +320,7 @@ button { background-color: #2e7d32; color: white; border: none; font-weight: bol
                 const prod = el.dataset.prod;
                 const pers = el.dataset.pers;
                 
-                // Sommiamo le variazioni (es. Mario +2, Luigi +1 = totale +3 per quel prodotto)
                 variazioniTotali[prod] = (variazioniTotali[prod] || 0) + netto;
-                
                 modifiche.push({ nome: fam, prodotto: prod, quantita: netto, nota: `${netto > 0 ? 'Agg.' : 'Sott.'} da ${pers}` });
                 riepilogoTesto += `• ${pers} | ${prod}: ${netto > 0 ? '+' : ''}${netto}\n`;
             }
@@ -318,15 +329,12 @@ button { background-color: #2e7d32; color: white; border: none; font-weight: bol
 
     if (modifiche.length === 0) return alert("Nessuna modifica inserita.");
 
-    // CONTROLLO GIACENZA SULLA SOMMA DELLE MODIFICHE
     for (const [prod, qtaNettaRichiesta] of Object.entries(variazioniTotali)) {
         if (qtaNettaRichiesta > 0) {
-            // Cerchiamo il prodotto nei dati globali per leggerne la giacenza attuale
             const p = prodottiGlobal.find(x => x.tipo === prod);
-            
             if (p && qtaNettaRichiesta > p.giacenza) {
                 alert(`⛔ ATTENZIONE: Overbooking per "${prod}".\nHai richiesto un totale di +${qtaNettaRichiesta} pezzi extra, ma in magazzino ne sono disponibili solo ${p.giacenza}.`);
-                return; // Ferma l'operazione
+                return;
             }
         }
     }
@@ -337,32 +345,46 @@ button { background-color: #2e7d32; color: white; border: none; font-weight: bol
     document.getElementById("modal").style.display = "flex";
   }
 
-  // --- LOGICA DI INVIO CON SCHERMATA ATTESA ---
   async function eseguiOperazioneBackend() {
-    // 1. Mostra la schermata bianca di caricamento sopra tutto
-    document.getElementById("loading-overlay").style.display = "flex";
-    chiudiModal(); // Chiude il popup di conferma
+    const overlay = document.getElementById("loading-overlay");
+    const statusBox = document.getElementById("status-message");
+    
+    overlay.style.display = "flex";
+    chiudiModal();
     document.getElementById("modal-dettaglio-persone").style.display = "none";
 
     try {
-      const res = await fetch(scriptUrl, {
-        method: "POST",
-        body: JSON.stringify({ action: "prenota", ordine: payloadTemporaneo })
-      });
-      await res.json();
-      
-      // 2. Ricarica i dati della giacenza in background
-      await caricaDati(); 
+        const res = await fetch(scriptUrl, {
+            method: "POST",
+            body: JSON.stringify({ action: "prenota", ordine: payloadTemporaneo })
+        });
+        await res.json();
 
-      // 3. Piccola attesa per far aggiornare Google Sheets e poi apre il riepilogo
-      setTimeout(async () => {
-        await mostraRiepilogoPrenotazioni(true); // 'true' indica che non deve mostrare lo spinner interno perché c'è già l'overlay
-        document.getElementById("loading-overlay").style.display = "none";
-      }, 800);
+        // Messaggio di Successo
+        statusBox.innerText = "✅ ORDINE CONFERMATO";
+        statusBox.className = "status-success";
+        statusBox.style.display = "block";
+
+        await caricaDati();
+
+        setTimeout(async () => {
+            statusBox.style.display = "none";
+            overlay.style.display = "none";
+            await mostraRiepilogoPrenotazioni(true);
+        }, 1500);
 
     } catch (e) {
-      alert("Errore: " + e.message);
-      document.getElementById("loading-overlay").style.display = "none";
+        // Messaggio di Errore
+        statusBox.innerText = "❌ ORDINE NON CONFERMATO!!!";
+        statusBox.className = "status-error";
+        statusBox.style.display = "block";
+        
+        console.error("Errore:", e);
+
+        setTimeout(() => {
+            statusBox.style.display = "none";
+            overlay.style.display = "none";
+        }, 3000);
     }
   }
 
@@ -403,7 +425,7 @@ button { background-color: #2e7d32; color: white; border: none; font-weight: bol
         html += `<div class="card-persona"><h4>👤 ${pers.nominativo}</h4><div class="table-wrapper"><table style="width:100%;"><tr style="font-size:0.8rem; background:#f0f0f0;"><th style="color:black; background:#eee; text-align:left;">Prodotto</th><th style="color:black; background:#eee; width:15%;">Att.</th><th style="color:green; background:#eee; width:20%;">+</th><th style="color:red; background:#eee; width:20%;">-</th></tr>`;
         for (const [prod, qta] of Object.entries(pers.prodotti)) {
           totPers += (qta * getPrezzo(prod));
-          html += `<tr><td style="text-align:left;">${prod}</td><td><strong>${qta}</strong></td><td><input type="number" class="in-add" data-pers="${pers.nominativo}" data-prod="${prod}" value="0"></td><td><input type="number" class="in-sub" data-pers="${pers.nominativo}" data-prod="${prod}" value="0" max="${qta}"></td></tr>`;
+          html += `<tr><td style="text-align:left;">${prod}</td><td><strong>${qta}</strong></td><td><input type="number" class="in-add" data-pers="${pers.nominativo}" data-prod="${prod}" value="0" min="0"></td><td><input type="number" class="in-sub" data-pers="${pers.nominativo}" data-prod="${prod}" value="0" min="0" max="${qta}"></td></tr>`;
         }
         html += `</table></div><div style="text-align:right; margin-top:10px; font-weight:bold; color:#2e7d32;">Parziale: € ${totPers}</div></div>`;
       });
