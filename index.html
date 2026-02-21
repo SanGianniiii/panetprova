@@ -12,39 +12,38 @@ body {
     font-family: "Segoe UI", sans-serif;
     background: linear-gradient(to right, #e8f5e9, #0a1a3f);
     margin: 0;
-    padding: 1rem; /* Ridotto per mobile */
+    padding: 1rem;
     color: #2e7d32;
 }
 
-/* --- STILI MODAL DETTAGLIO/RIEPILOGO --- */
 #modal-riepilogo > div, #modal-dettaglio-persone > div {
     max-height: 80vh;
     overflow-y: auto;
-    padding: 15px; /* Compattato */
-    max-width: 95%; /* Sfrutta più larghezza su mobile */
+    padding: 15px; 
+    max-width: 95%; 
 }
 
-/* Rimuove lo spazio extra sotto l'intestazione */
 #contenuto-riepilogo p, #contenuto-dettaglio h4 {
     margin-top: 0.5rem;
     margin-bottom: 0.8rem;
 }
 
-/* Stile per il blocco di dettaglio di una singola persona */
 .dettaglio-persona {
     margin-top: 0.5rem;
-    padding: 0.5rem;
+    padding: 0.8rem;
     border: 1px solid #a5d6a7;
     border-radius: 5px;
+    background-color: #fcfcfc;
 }
 .dettaglio-persona h5 {
     margin-top: 0;
     margin-bottom: 0.5rem;
     font-size: 1.1rem;
     color: #0a1a3f;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 5px;
 }
 
-/* --- STILI HEADER e FORM --- */
 header {
     display: flex;
     align-items: center;
@@ -53,15 +52,14 @@ header {
     margin-bottom: 2rem;
 }
 header img {
-    width: 80px; /* Leggermente rimpicciolito per mobile */
+    width: 80px; 
     height: 80px;
 }
 h2 {
     margin: 0;
-    font-size: 1.8rem; /* Ridotto per mobile */
+    font-size: 1.8rem; 
 }
 
-/* INPUT e SELECT */
 select, input[type="number"], input[type="text"], button {
     width: 100%;
     padding: 0.7rem;
@@ -72,11 +70,10 @@ select, input[type="number"], input[type="text"], button {
     box-sizing: border-box;
 }
 
-/* --- STILI TABELLA (Ottimizzati per Mobile) --- */
 table {
-    display: block; /* Fondamentale per lo scroll su mobile */
+    display: block; 
     overflow-x: auto;
-    white-space: nowrap; /* Evita ritorni a capo che rovinano la UI */
+    white-space: nowrap; 
     width: 100%;
     border-collapse: collapse;
     background-color: white;
@@ -85,8 +82,8 @@ table {
     box-shadow: 0 2px 6px rgba(0, 128, 0, 0.2);
 }
 th, td {
-    padding: 0.5rem; /* Margini ridotti */
-    font-size: 0.9rem; /* Font più piccolo per farci stare più info */
+    padding: 0.5rem; 
+    font-size: 0.9rem; 
     text-align: center;
     border-bottom: 1px solid #e0f2f1;
 }
@@ -94,18 +91,16 @@ th {
     background-color: #a5d6a7;
     color: white;
 }
-/* INPUT SPECIFICI PER TABELLA */
 td input[type="number"], td input[type="text"] {
-    max-width: 60px; /* Ristretto per recuperare spazio */
+    max-width: 60px; 
     box-sizing: border-box;
     margin: 0;
     padding: 0.3rem;
 }
 td input[type="text"] {
-    max-width: 100px; /* Spazio giusto per la nota */
+    max-width: 100px; 
 }
 
-/* --- STILI PULSANTI --- */
 button {
     background-color: #2e7d32;
     color: white;
@@ -123,7 +118,6 @@ button:hover {
     flex-grow: 1;
 }
 
-/* --- STILI MODAL GENERICI --- */
 #modal {
     position: fixed;
     top: 0; left: 0;
@@ -136,9 +130,9 @@ button:hover {
 }
 #modal-content {
     background: white;
-    padding: 15px; /* Compattato */
+    padding: 15px; 
     border-radius: 10px;
-    max-width: 95%; /* Più largo su mobile */
+    max-width: 95%; 
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 #modal-content h3 {
@@ -146,7 +140,6 @@ button:hover {
     color: #2e7d32;
 }
 
-/* --- SPINNER --- */
 .spinner {
     display: inline-block;
     width: 16px;
@@ -160,7 +153,6 @@ button:hover {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* --- MEDIA QUERY PC --- */
 @media (min-width: 768px) {
     select, input[type="number"], button {
         max-width: 500px;
@@ -169,7 +161,7 @@ button:hover {
         display: block;
     }
     table {
-        display: table; /* Su PC torna normale */
+        display: table; 
         white-space: normal;
     }
 }
@@ -198,7 +190,6 @@ button:hover {
     .catch(err => console.error('❌ Errore SW:', err));
 
   onMessage(messaging, (payload) => {
-    console.log("📩 Messaggio ricevuto:", payload);
     alert(`📢 Notifica: ${payload.notification.title} - ${payload.notification.body}`);
   });
 </script>
@@ -241,23 +232,23 @@ button:hover {
 </div>
 
 <div id="modal-riepilogo" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center; z-index: 10000;">
-  <div style="background:#fff;border-radius:10px;width:100%;"> 
-    <h3>Riepilogo Prenotazioni</h3>
-    <div id="spinner-riepilogo" style="display:none;color:#2e7d32;font-weight:bold;margin-bottom:1rem;">
-      Generazione riepilogo in corso... <span class="spinner"></span>
+  <div style="background:#fff;border-radius:10px;width:100%; padding-bottom: 10px;"> 
+    <h3 style="margin-left: 15px; margin-top: 15px;">Riepilogo Prenotazioni</h3>
+    <div id="spinner-riepilogo" style="display:none;color:#2e7d32;font-weight:bold;margin-left:15px;">
+      Recupero dati... <span class="spinner"></span>
     </div>
     <div id="contenuto-riepilogo"></div>
   </div>
 </div>
 
 <div id="modal-dettaglio-persone" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center; z-index: 10000;">
-  <div style="background:#fff;border-radius:10px;width:100%;">
-    <h3>Dettaglio per Persona</h3>
-    <div id="spinner-dettaglio" style="display:none;color:#2e7d32;font-weight:bold;margin-bottom:1rem;">
+  <div style="background:#fff;border-radius:10px;width:100%; padding-bottom: 10px;">
+    <h3 style="margin-left: 15px; margin-top: 15px;">Dettaglio per Persona</h3>
+    <div id="spinner-dettaglio" style="display:none;color:#2e7d32;font-weight:bold;margin-left:15px;">
       Caricamento in corso... <span class="spinner"></span>
     </div>
     <div id="contenuto-dettaglio" style="white-space: pre-wrap;"></div>
-    <div id="pulsanti-dettaglio" style="display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+    <div id="pulsanti-dettaglio" style="display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin: 0 15px;">
       <button id="btnApplicaModifiche" onclick="inviaModificaDettaglio()" style="flex-grow: 1; background-color: #2e7d32;">Applica Modifiche</button>
       <button onclick="document.getElementById('modal-dettaglio-persone').style.display='none'" style="flex-grow: 1; background-color: #6c757d;">Chiudi</button>
     </div>
@@ -268,9 +259,30 @@ button:hover {
   const scriptUrl = "https://script.google.com/macros/s/AKfycbxEDGWC2lozKekZlR1dvIY2_3OZYdPb81-pTN2kBCCag3suzm_ArdGSNqOlPy_hmIQW/exec";
   let prodotti = [];
   let ordineDaInviare = [];
-  let riepilogoCorrente = [];
 
- async function caricaProdotti() {
+  // Configurazione Prezzi Prodotti
+  const PREZZI = {
+      "pistacchio": 19,
+      "nocciola": 19,
+      "fondente": 19,
+      "mandorla": 19,
+      "caffe": 19,
+      "pera ciocco": 17,
+      "arancia candita": 17,
+      "frutti di bosco": 17,
+      "jelly limone arancia rossa": 19
+  };
+
+  // Funzione per cercare il prezzo basata sul nome del prodotto (ignora case e spazi extra)
+  function getPrezzo(nomeProdotto) {
+      const n = nomeProdotto.toLowerCase().trim();
+      for (const [key, price] of Object.entries(PREZZI)) {
+          if (n.includes(key)) return price;
+      }
+      return 0; 
+  }
+
+  async function caricaProdotti() {
     try {
       const res = await fetch(scriptUrl + "?action=read");
       const data = await res.json();
@@ -325,19 +337,13 @@ button:hover {
       alert(`Attenzione: la giacenza del prodotto "${p.tipo}" è inferiore alla richiesta.`);
       return;
     }
-
     if (qty > 0 && !nota) {
       alert(`⚠️ È obbligatorio specificare una nota per il prodotto "${p.tipo}".`);
       return;
     }
 
     if (qty > 0) {
-      ordine.push({ 
-        nome, 
-        prodotto: p.tipo, 
-        quantita: qty,
-        nota: nota
-      });
+      ordine.push({ nome, prodotto: p.tipo, quantita: qty, nota: nota });
     }
   }
 
@@ -377,7 +383,8 @@ button:hover {
     }
   }
 
- async function mostraRiepilogoPrenotazioni() {
+  // --- RIEPILOGO SENZA ANNULLAMENTO + TOTALI ---
+  async function mostraRiepilogoPrenotazioni() {
     const nominativo = document.getElementById('nome').value.trim();
     if (!nominativo) return alert("Seleziona prima un nominativo.");
 
@@ -392,44 +399,39 @@ button:hover {
       const res = await fetch(url);
       const data = await res.json();
       
-      riepilogoCorrente = data;
       spinner.style.display = "none";
-      
-      const prenotazioniAttive = data.filter(item => item.valore > 0);
+      const prenotazioniAttive = data.riepilogoArray.filter(item => item.valore > 0);
 
       if (!prenotazioniAttive.length) {
-        contenuto.innerText = `Nessuna prenotazione attiva per ${nominativo}.`;
-        contenuto.innerHTML += `<button onclick="document.getElementById('modal-riepilogo').style.display='none'" style="background-color: #6c757d;">Chiudi</button>`;
+        contenuto.innerHTML = `<p style="margin:0 15px;">Nessuna prenotazione attiva per ${nominativo}.</p>`;
+        contenuto.innerHTML += `<div style="margin: 0 15px;"><button onclick="document.getElementById('modal-riepilogo').style.display='none'" style="background-color: #6c757d;">Chiudi</button></div>`;
         return;
       }
 
-      let html = `<p style="font-size: 0.9rem; margin-bottom: 5px;">Riepilogo <strong>${nominativo}</strong>. Annullamenti:</p>`;
+      let html = `<p style="font-size: 0.9rem; margin: 0 15px 10px;">Riepilogo <strong>${nominativo}</strong>:</p>`;
       
       html += `<table>
                   <tr>
                     <th>Prodotto</th>
-                    <th>Pren.</th>
-                    <th>Da Ann.</th>
-                    <th>Nota</th>
+                    <th>Prenotati</th>
                   </tr>`;
       
-      prenotazioniAttive.forEach((item, i) => {
+      prenotazioniAttive.forEach((item) => {
         html += `<tr>
                    <td>${item.prodotto}</td>
                    <td><strong>${item.valore}</strong></td>
-                   <td>
-                     <input type="number" id="annulla-${i}" min="0" max="${item.valore}" value="0">
-                   </td>
-                   <td>
-                     <input type="text" id="nota-annulla-${i}" placeholder="Motivo">
-                   </td>
                  </tr>`;
       });
       
       html += `</table>`;
+
+      // Sezione Totali presa dal Backend
+      html += `<div style="margin: 15px; padding: 12px; background-color: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 8px; text-align: right;">
+                 <p style="margin: 0; font-size: 1.1rem; color: #0a1a3f;">Totale Ordini: <strong>${data.totaleProdotti}</strong></p>
+                 <p style="margin: 5px 0 0 0; font-size: 1.3rem; color: #2e7d32; font-weight: bold;">Da Pagare: € ${data.totaleDaPagare}</p>
+               </div>`;
       
-      html += `<div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 1rem; flex-wrap: wrap;">`
-      html += `<button id="btnConfermaAnnullamento" onclick="inviaAnnullamento()" style="flex-grow: 1;">Conferma</button>`;
+      html += `<div style="display: flex; justify-content: space-between; gap: 10px; margin: 15px; flex-wrap: wrap;">`
       html += `<button onclick="mostraDettaglioPerPersone(true)" style="flex-grow: 1; background-color: #0a1a3f;">Dettaglio Persone</button>`;
       html += `<button onclick="document.getElementById('modal-riepilogo').style.display='none'" style="flex-grow: 1; background-color: #6c757d;">Chiudi</button>`;
       html += `</div>`;
@@ -438,83 +440,11 @@ button:hover {
 
     } catch (err) {
       spinner.style.display = "none";
-      contenuto.innerText = "Errore: " + err.message;
+      contenuto.innerHTML = `<p style="margin:15px;">Errore: ${err.message}</p>`;
     }
   }
 
-  async function inviaAnnullamento() {
-    const nome = document.getElementById("nome").value.trim();
-    const btn = document.getElementById("btnConfermaAnnullamento");
-    
-    btn.disabled = true;
-    btn.innerHTML = 'Elaborazione... <span class="spinner"></span>';
-
-    const ordineDiAnnullamento = [];
-    let errore = false;
-
-    const prenotazioniAttive = riepilogoCorrente.filter(item => item.valore > 0);
-
-    prenotazioniAttive.forEach((item, i) => {
-      const inputQty = document.getElementById(`annulla-${i}`);
-      const inputNota = document.getElementById(`nota-annulla-${i}`); 
-
-      if (inputQty) {
-        const qtyDaAnnullare = parseInt(inputQty.value) || 0;
-        const notaAnnullamento = inputNota ? inputNota.value.trim() : "";
-
-        if (qtyDaAnnullare > item.valore) {
-          alert(`Errore: Non puoi annullare ${qtyDaAnnullare} ${item.prodotto}, ne hai prenotati solo ${item.valore}.`);
-          errore = true;
-        }
-        
-        if (qtyDaAnnullare > 0 && !notaAnnullamento) {
-          alert(`⚠️ È obbligatorio specificare una nota per l'annullamento di "${item.prodotto}".`);
-          errore = true;
-        }
-
-        if (qtyDaAnnullare > 0 && !errore) {
-          ordineDiAnnullamento.push({
-            nome: nome,
-            prodotto: item.prodotto,
-            quantita: -qtyDaAnnullare,
-            nota: `Annullato: ${notaAnnullamento}`
-          });
-        }
-      }
-    });
-
-    if (errore) {
-      btn.disabled = false;
-      btn.innerHTML = 'Conferma';
-      return;
-    }
-
-    if (ordineDiAnnullamento.length === 0) {
-      alert("Nessuna quantità da annullare inserita.");
-      btn.disabled = false;
-      btn.innerHTML = 'Conferma';
-      return;
-    }
-
-    try {
-      const res = await fetch(scriptUrl, {
-        method: "POST",
-        body: JSON.stringify({ action: "prenota", ordine: ordineDiAnnullamento })
-      });
-      await res.json();
-      
-      alert("✅ Annullamento registrato con successo!");
-      
-      document.getElementById('modal-riepilogo').style.display = "none";
-      caricaProdotti(); 
-      
-    } catch (e) {
-      alert("Errore invio annullamento: " + e.message);
-      btn.disabled = false;
-      btn.innerHTML = 'Conferma';
-    }
-  }
-
+  // --- DETTAGLIO PERSONE CON AGGIUNGI/ELIMINA E ORDINATO ---
   async function mostraDettaglioPerPersone(chiudiRiepilogo = false) { 
     const nominativo = document.getElementById('nome').value.trim();
     if (!nominativo) return alert("Seleziona prima un nominativo.");
@@ -540,48 +470,75 @@ button:hover {
         spinner.style.display = "none";
         
         if (!dettaglioFamiglia.length) {
-            contenuto.innerText = `Nessun ordine consolidato trovato.`;
+            contenuto.innerHTML = `<p style="margin:0 15px;">Nessun ordine consolidato trovato.</p>`;
             document.getElementById('pulsanti-dettaglio').style.display = 'none';
-            contenuto.innerHTML += `<br><button onclick="document.getElementById('modal-dettaglio-persone').style.display='none'" style="margin-top:10px; background-color: #6c757d;">Chiudi</button>`;
+            contenuto.innerHTML += `<div style="margin:0 15px;"><br><button onclick="document.getElementById('modal-dettaglio-persone').style.display='none'" style="margin-top:10px; background-color: #6c757d;">Chiudi</button></div>`;
             return;
         }
 
-        let html = `<p style="margin-top: 0.2rem; font-size: 0.85em; color: #6c757d;">*Usa valori positivi per **Aggiungere**, negativi per **Sottrarre**.</p>`;
+        // Creiamo l'array di riferimento per l'ordinamento (usando i dati già caricati di giacenza)
+        const ordineProdotti = prodotti.map(p => p.tipo.trim());
+
+        let html = ``;
 
         dettaglioFamiglia.forEach((persona, pIdx) => {
             const nomePersona = persona.nominativo;
+            let totaleEuroPersona = 0;
+
             html += `<div class="dettaglio-persona">`;
             html += `<h5>👤 ${nomePersona}</h5>`;
-            
             html += `<table>
                         <tr>
                             <th>Prodotto</th>
                             <th>Att.</th>
-                            <th>Mod (+/-)</th>
+                            <th style="color: #2e7d32;">Agg.</th>
+                            <th style="color: #d32f2f;">Elim.</th>
                         </tr>`;
             
-            Object.keys(persona).forEach(key => {
-                if (key !== 'nominativo') {
-                    html += `<tr>
-                            <td>${key}</td>
-                            <td><strong>${persona[key]}</strong></td>
+            // Ordina le chiavi dei prodotti di questa persona secondo l'array di giacenza
+            const prodottiPersona = Object.keys(persona.prodotti).sort((a, b) => {
+                const idxA = ordineProdotti.indexOf(a);
+                const idxB = ordineProdotti.indexOf(b);
+                if (idxA === -1 && idxB === -1) return a.localeCompare(b);
+                if (idxA === -1) return 1;
+                if (idxB === -1) return -1;
+                return idxA - idxB;
+            });
+
+            prodottiPersona.forEach(prodottoNome => {
+                const quantita = persona.prodotti[prodottoNome];
+                const prezzoSingolo = getPrezzo(prodottoNome);
+                totaleEuroPersona += (quantita * prezzoSingolo);
+
+                html += `<tr>
+                            <td>${prodottoNome}</td>
+                            <td><strong>${quantita}</strong></td>
                             <td>
-                                <input type="number" id="modifica-${pIdx}-${key.replace(/\s/g, '_')}" 
-                                       min="-${persona[key]}" value="0" 
-                                       data-prodotto="${key}"
+                                <input type="number" id="aggiungi-${pIdx}-${prodottoNome.replace(/\s/g, '_')}" 
+                                       min="0" value="0" class="input-aggiungi"
+                                       data-prodotto="${prodottoNome}"
+                                       data-persona="${nomePersona}" />
+                            </td>
+                            <td>
+                                <input type="number" id="elimina-${pIdx}-${prodottoNome.replace(/\s/g, '_')}" 
+                                       min="0" max="${quantita}" value="0" class="input-elimina"
+                                       data-prodotto="${prodottoNome}"
                                        data-persona="${nomePersona}" />
                             </td>
                          </tr>`;
-                }
             });
-            html += `</table></div>`;
+            html += `</table>`;
+            html += `<div style="text-align: right; margin-top: 10px; font-weight: bold; font-size: 1.1rem; color: #0a1a3f;">
+                        Totale: € ${totaleEuroPersona}
+                     </div>`;
+            html += `</div>`;
         });
         
         contenuto.innerHTML = html;
 
     } catch (err) {
         spinner.style.display = "none";
-        contenuto.innerText = "Errore: " + err.message;
+        contenuto.innerHTML = `<p style="margin:15px;">Errore: ${err.message}</p>`;
     }
   }
 
@@ -592,20 +549,29 @@ async function inviaModificaDettaglio() {
     const modificheDaInviare = [];
     let modificheTotali = 0;
 
-    document.querySelectorAll('[id^="modifica-"]').forEach(input => {
-        const modifica = parseInt(input.value) || 0;
+    const inputsAggiungi = document.querySelectorAll('.input-aggiungi');
+    const inputsElimina = document.querySelectorAll('.input-elimina');
+
+    inputsAggiungi.forEach((inputAgg, idx) => {
+        const inputElimina = inputsElimina[idx];
         
-        if (modifica !== 0) {
-            const prodotto = input.getAttribute('data-prodotto');
-            const nomePersona = input.getAttribute('data-persona');
+        const qtaAggiungi = parseInt(inputAgg.value) || 0;
+        const qtaElimina = parseInt(inputElimina.value) || 0;
+        
+        // Calcolo della modifica netta finale
+        const variazioneNetta = qtaAggiungi - qtaElimina;
+        
+        if (variazioneNetta !== 0) {
+            const prodotto = inputAgg.getAttribute('data-prodotto');
+            const nomePersona = inputAgg.getAttribute('data-persona');
             
-            const azione = modifica > 0 ? "Aggiunta" : "Sottrazione";
+            const azione = variazioneNetta > 0 ? "Aggiunta" : "Sottrazione";
             const notaAutomatica = `${azione} da ${nomePersona} (Dettaglio)`;
 
             modificheDaInviare.push({
                 nome: nomeFamiglia,
                 prodotto: prodotto,
-                quantita: modifica,
+                quantita: variazioneNetta,
                 nota: notaAutomatica
             });
             modificheTotali++;
@@ -613,14 +579,14 @@ async function inviaModificaDettaglio() {
     });
 
     if (modificheTotali === 0) {
-        alert("Nessuna modifica inserita.");
+        alert("Nessuna quantità inserita da aggiungere o eliminare.");
         return;
     }
     
-    if (!confirm(`Sei sicuro di voler inviare ${modificheTotali} modifiche?`)) return;
+    if (!confirm(`Sei sicuro di voler inviare le modifiche richieste?`)) return;
 
     btn.disabled = true;
-    btn.innerHTML = 'Invio... <span class="spinner"></span>';
+    btn.innerHTML = 'Invio... <span class="spinner" style="border-color:white;border-top-color:transparent;"></span>';
 
     try {
         const res = await fetch(scriptUrl, {
