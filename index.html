@@ -463,18 +463,36 @@ button:hover { background-color: #1b5e20; }
   }
 
   async function eseguiOperazioneBackend() {
-    document.getElementById("messaggioAttesa").style.display = "block";
+    const attesa = document.getElementById("messaggioAttesa");
+    attesa.style.display = "block";
+    
     try {
       const res = await fetch(scriptUrl, {
         method: "POST",
         body: JSON.stringify({ action: "prenota", ordine: payloadTemporaneo })
       });
       const result = await res.json();
-      alert("✅ Operazione completata!");
-      location.reload(); // Ricarica per aggiornare tutto
+      
+      // 1. Chiudiamo il modal di conferma e quello del dettaglio
+      chiudiModal();
+      document.getElementById('modal-dettaglio-persone').style.display = "none";
+      
+      // 2. Messaggio veloce di successo (opzionale, scompare dopo 1.5s)
+      console.log("Dati salvati con successo");
+
+      // 3. Aggiorniamo la tabella principale in background (senza ricaricare la pagina)
+      await caricaDati(); 
+
+      // 4. APRIAMO AUTOMATICAMENTE IL RIEPILOGO AGGIORNATO
+      // Passiamo un piccolo timeout per dare tempo a Google Sheets di finire i calcoli
+      setTimeout(() => {
+        mostraRiepilogoPrenotazioni();
+      }, 500); 
+
     } catch (e) {
-      alert("Errore: " + e.message);
-      document.getElementById("messaggioAttesa").style.display = "none";
+      alert("Errore durante il salvataggio: " + e.message);
+    } finally {
+      attesa.style.display = "none";
     }
   }
 
