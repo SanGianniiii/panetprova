@@ -321,8 +321,18 @@ button:hover { background-color: #1b5e20; }
                 const pers = el.dataset.pers;
                 
                 variazioniTotali[prod] = (variazioniTotali[prod] || 0) + netto;
-                modifiche.push({ nome: fam, prodotto: prod, quantita: netto, nota: `${netto > 0 ? 'Agg.' : 'Sott.'} da ${pers}` });
-                riepilogoTesto += `• ${pers} | ${prod}: ${netto > 0 ? '+' : ''}${netto}\n`;
+                
+                // 🔴 IL FIX È QUI: La nota deve essere SOLO "pers" (il nome esatto della persona)
+                modifiche.push({ 
+                    nome: fam, 
+                    prodotto: prod, 
+                    quantita: netto, 
+                    nota: pers 
+                });
+                
+                // Il testo decorativo lo mettiamo SOLO nel messaggio del popup visivo
+                const azione = netto > 0 ? 'Aggiunti' : 'Sottratti';
+                riepilogoTesto += `• ${pers} | ${prod}: ${netto > 0 ? '+' : ''}${netto} (${azione})\n`;
             }
         });
     });
@@ -344,7 +354,6 @@ button:hover { background-color: #1b5e20; }
     document.getElementById("riepilogoCorpo").innerText = riepilogoTesto;
     document.getElementById("modal").style.display = "flex";
   }
-
 async function eseguiOperazioneBackend() {
     const overlay = document.getElementById("loading-overlay");
     const statusBox = document.getElementById("status-message");
