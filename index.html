@@ -5,62 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#FFD700">
-  <title>Versione Beta2</title>
+  <title>Versione Beta</title>
   <style>
 /* --- STILI BASE --- */
 body {
     font-family: "Segoe UI", sans-serif;
     background: linear-gradient(to right, #e8f5e9, #0a1a3f);
     margin: 0;
-    padding: 1rem;
+    padding: 1rem; /* Ridotto per mobile */
     color: #2e7d32;
 }
 
-/* --- STILI MODAL --- */
+/* --- STILI MODAL DETTAGLIO/RIEPILOGO --- */
 #modal-riepilogo > div, #modal-dettaglio-persone > div {
-    max-height: 90vh;
+    max-height: 80vh;
     overflow-y: auto;
-    padding: 15px;
-    max-width: 95%;
-    background: white;
-    border-radius: 10px;
+    padding: 15px; /* Compattato */
+    max-width: 95%; /* Sfrutta più larghezza su mobile */
 }
 
+/* Rimuove lo spazio extra sotto l'intestazione */
+#contenuto-riepilogo p, #contenuto-dettaglio h4 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.8rem;
+}
+
+/* Stile per il blocco di dettaglio di una singola persona */
 .dettaglio-persona {
-    margin-top: 10px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background: #f9f9f9;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid #a5d6a7;
+    border-radius: 5px;
+}
+.dettaglio-persona h5 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    color: #0a1a3f;
 }
 
-/* --- MINI PULSANTI +/- --- */
-.btn-control {
-    width: 35px !important;
-    height: 35px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    border-radius: 50% !important;
-    font-size: 1.2rem !important;
-    font-weight: bold !important;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: none;
-    color: white;
-}
-.btn-plus { background-color: #2e7d32 !important; }
-.btn-minus { background-color: #d32f2f !important; }
-
-/* Rimuove freccette input number */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-/* --- HEADER e FORM --- */
+/* --- STILI HEADER e FORM --- */
 header {
     display: flex;
     align-items: center;
@@ -68,10 +52,17 @@ header {
     justify-content: center;
     margin-bottom: 2rem;
 }
-header img { width: 60px; height: 60px; }
-h2 { margin: 0; font-size: 1.5rem; color: #fff; }
+header img {
+    width: 80px; /* Leggermente rimpicciolito per mobile */
+    height: 80px;
+}
+h2 {
+    margin: 0;
+    font-size: 1.8rem; /* Ridotto per mobile */
+}
 
-select, input[type="number"], input[type="text"], .btn-main {
+/* INPUT e SELECT */
+select, input[type="number"], input[type="text"], button {
     width: 100%;
     padding: 0.7rem;
     margin-top: 1rem;
@@ -81,40 +72,78 @@ select, input[type="number"], input[type="text"], .btn-main {
     box-sizing: border-box;
 }
 
-.btn-main {
-    background-color: #2e7d32;
-    color: white;
-    font-weight: bold;
-    border: none;
-}
-
-/* --- TABELLE MOBILE --- */
+/* --- STILI TABELLA (Ottimizzati per Mobile) --- */
 table {
+    display: block; /* Fondamentale per lo scroll su mobile */
+    overflow-x: auto;
+    white-space: nowrap; /* Evita ritorni a capo che rovinano la UI */
     width: 100%;
     border-collapse: collapse;
     background-color: white;
     margin-top: 1rem;
     border-radius: 8px;
-    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 128, 0, 0.2);
 }
 th, td {
-    padding: 8px;
-    font-size: 0.85rem;
+    padding: 0.5rem; /* Margini ridotti */
+    font-size: 0.9rem; /* Font più piccolo per farci stare più info */
     text-align: center;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #e0f2f1;
 }
-th { background-color: #a5d6a7; color: white; }
+th {
+    background-color: #a5d6a7;
+    color: white;
+}
+/* INPUT SPECIFICI PER TABELLA */
+td input[type="number"], td input[type="text"] {
+    max-width: 60px; /* Ristretto per recuperare spazio */
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0.3rem;
+}
+td input[type="text"] {
+    max-width: 100px; /* Spazio giusto per la nota */
+}
 
-/* --- MODAL GENERICO --- */
-.modal-overlay {
+/* --- STILI PULSANTI --- */
+button {
+    background-color: #2e7d32;
+    color: white;
+    border: none;
+    margin-top: 1.5rem;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+button:hover {
+    background-color: #1b5e20;
+}
+#modal-content button, #modal-riepilogo button, #modal-dettaglio-persone button {
+    width: auto;
+    margin: 1rem 0 0 0;
+    flex-grow: 1;
+}
+
+/* --- STILI MODAL GENERICI --- */
+#modal {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.5);
     display: none;
     justify-content: center;
     align-items: center;
     z-index: 10000;
+}
+#modal-content {
+    background: white;
+    padding: 15px; /* Compattato */
+    border-radius: 10px;
+    max-width: 95%; /* Più largo su mobile */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+#modal-content h3 {
+    margin-top: 0;
+    color: #2e7d32;
 }
 
 /* --- SPINNER --- */
@@ -126,20 +155,62 @@ th { background-color: #a5d6a7; color: white; }
     border-top: 2px solid transparent;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
+    vertical-align: middle;
+    margin-left: 8px;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* --- MEDIA QUERY PC --- */
+@media (min-width: 768px) {
+    select, input[type="number"], button {
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+    }
+    table {
+        display: table; /* Su PC torna normale */
+        white-space: normal;
+    }
+}
 </style>
 </head>
 <body>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAY8l_GGRWPWi5BFpirUMXd2JN0MVZZpYM",
+    authDomain: "ordinipost-fcc7f.firebaseapp.com",
+    projectId: "ordinipost-fcc7f",
+    storageBucket: "ordinipost-fcc7f.appspot.com",
+    messagingSenderId: "363847145933",
+    appId: "1:363847145933:web:d1590848833eb147590c84",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const messaging = getMessaging(app);
+
+  navigator.serviceWorker
+    .register('/panetprova/firebase-messaging-sw.js')
+    .then(() => console.log('✅ Service Worker registrato'))
+    .catch(err => console.error('❌ Errore SW:', err));
+
+  onMessage(messaging, (payload) => {
+    console.log("📩 Messaggio ricevuto:", payload);
+    alert(`📢 Notifica: ${payload.notification.title} - ${payload.notification.body}`);
+  });
+</script>
 
 <header>
   <img src="logo.png" alt="Logo" />
-  <h2>Versione Beta2</h2>
+  <h2>WebApp Versione Beta2</h2>
 </header>
 
-<label for="nome" style="color: white;">Seleziona Famiglia:</label>
+<label for="nome">Seleziona Famiglia di Padrini:</label>
 <select id="nome">
-  <option value="">-- Seleziona --</option>
+  <option value="">-- Seleziona la tua Famiglia --</option>
   <option>Carapezza</option><option>Caruso</option><option>Di Maria</option>
   <option>Marino</option><option>Massimino</option><option>Milanese</option>
   <option>Murabito</option><option>Nicosia</option><option>Pantellaro</option>
@@ -147,196 +218,430 @@ th { background-color: #a5d6a7; color: white; }
   <option>Scala</option><option>Tanasi</option><option>Zammillo</option>
 </select>
 
-<div id="prodotti"></div>
+<div id="tabella-g">
+  <h3>Disponibilità prodotti</h3>
+  <div id="prodotti"></div>
+</div>
 
-<button class="btn-main" onclick="confermaOrdine()">Prenota</button>
-<button class="btn-main" style="background-color: #0a1a3f;" onclick="mostraRiepilogoPrenotazioni()">Riepilogo Prenotazioni</button>
+<button onclick="confermaOrdine()">Prenota</button>
+<button onclick="mostraRiepilogoPrenotazioni()">Riepilogo Prenotazioni</button>
 
-<div id="modal" class="modal-overlay">
-  <div style="background: white; padding: 20px; border-radius: 10px; width: 90%;">
+<div id="modal">
+  <div id="modal-content">
     <h3>Conferma ordine</h3>
-    <pre id="riepilogoModal" style="white-space: pre-wrap; font-family: sans-serif;"></pre>
-    <div id="messaggioAttesa" style="display:none; color:#2e7d32;">Processing... <span class="spinner"></span></div>
+    <pre id="riepilogoModal" style="white-space: pre-wrap; font-family: monospace; font-size: 0.9rem;"></pre>
+    <div id="messaggioAttesa" style="display:none;color:#2e7d32;font-weight:bold;">
+      ⏳ Attendi, il tuo ordine sta per essere processato... <span class="spinner"></span>
+    </div>
     <div style="display: flex; gap: 10px;">
-        <button class="btn-main" onclick="inviaOrdine()">Invia</button>
-        <button class="btn-main" style="background:#6c757d;" onclick="chiudiModal()">Annulla</button>
+        <button onclick="inviaOrdine()">Conferma</button>
+        <button onclick="chiudiModal()" style="background-color: #6c757d;">Annulla</button>
     </div>
   </div>
 </div>
 
-<div id="modal-riepilogo" class="modal-overlay">
-  <div> 
-    <h3>Riepilogo Famiglia</h3>
-    <div id="spinner-riepilogo" style="display:none;">Caricamento... <span class="spinner"></span></div>
+<div id="modal-riepilogo" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center; z-index: 10000;">
+  <div style="background:#fff;border-radius:10px;width:100%;"> 
+    <h3>Riepilogo Prenotazioni</h3>
+    <div id="spinner-riepilogo" style="display:none;color:#2e7d32;font-weight:bold;margin-bottom:1rem;">
+      Generazione riepilogo in corso... <span class="spinner"></span>
+    </div>
     <div id="contenuto-riepilogo"></div>
   </div>
 </div>
 
-<div id="modal-dettaglio-persone" class="modal-overlay">
-  <div>
-    <h3>Modifica Dettaglio</h3>
-    <div id="spinner-dettaglio" style="display:none;">Caricamento... <span class="spinner"></span></div>
-    <div id="contenuto-dettaglio"></div>
-    <div id="pulsanti-dettaglio" style="display: flex; gap: 10px; margin-top: 15px;">
-      <button id="btnApplicaModifiche" class="btn-main" onclick="inviaModificaDettaglio()">Salva</button>
-      <button class="btn-main" style="background:#6c757d;" onclick="document.getElementById('modal-dettaglio-persone').style.display='none'">Esci</button>
+<div id="modal-dettaglio-persone" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center; z-index: 10000;">
+  <div style="background:#fff;border-radius:10px;width:100%;">
+    <h3>Dettaglio per Persona</h3>
+    <div id="spinner-dettaglio" style="display:none;color:#2e7d32;font-weight:bold;margin-bottom:1rem;">
+      Caricamento in corso... <span class="spinner"></span>
+    </div>
+    <div id="contenuto-dettaglio" style="white-space: pre-wrap;"></div>
+    <div id="pulsanti-dettaglio" style="display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+      <button id="btnApplicaModifiche" onclick="inviaModificaDettaglio()" style="flex-grow: 1; background-color: #2e7d32;">Applica Modifiche</button>
+      <button onclick="document.getElementById('modal-dettaglio-persone').style.display='none'" style="flex-grow: 1; background-color: #6c757d;">Chiudi</button>
     </div>
   </div>
 </div>
-
+  
 <script>
   const scriptUrl = "https://script.google.com/macros/s/AKfycbxEDGWC2lozKekZlR1dvIY2_3OZYdPb81-pTN2kBCCag3suzm_ArdGSNqOlPy_hmIQW/exec";
   let prodotti = [];
   let ordineDaInviare = [];
   let riepilogoCorrente = [];
 
-  async function caricaProdotti() {
+ async function caricaProdotti() {
     try {
       const res = await fetch(scriptUrl + "?action=read");
-      prodotti = await res.json();
+      const data = await res.json();
+      prodotti = data;
       mostraTabella();
+
       const salvato = localStorage.getItem("famiglia");
       if (salvato) document.getElementById("nome").value = salvato;
-    } catch (e) { alert("Errore: " + e.message); } 
+    } catch (e) {
+      alert("Errore nel caricamento dei dati: " + e.message);
+    } 
   }
 
-  function mostraTabella() {
-    let html = "<table><tr><th>Prodotto</th><th>Disp.</th><th>Qtà</th><th>Nota</th></tr>"; 
-    prodotti.forEach((p, i) => {
-      html += `<tr>
+ function mostraTabella() {
+  let html = "<table><tr><th>Prodotto</th><th>Disp.</th><th>Qtà</th><th>Nota</th></tr>"; 
+  prodotti.forEach((p, i) => {
+    html += `<tr>
                 <td>${p.tipo}</td>
                 <td><strong>${p.giacenza}</strong></td>
-                <td>${p.giacenza <= 0 ? 'SO' : `<input type="number" id="quantita-${i}" min="0" style="width:40px">`}</td>
-                <td><input type="text" id="nota-${i}" placeholder="Nome" style="width:70px"></td> 
+                <td>${
+                  p.giacenza <= 0
+                    ? '<span style="color:red; font-weight:bold; font-size: 0.8rem;">Sold Out</span>'
+                    : `<input type="number" id="quantita-${i}" min="0" max="${p.giacenza}" />`
+                }</td>
+                <td> 
+                  <input type="text" id="nota-${i}" placeholder="Es: 1 Mario" />
+                </td> 
               </tr>`;
-    });
-    document.getElementById("prodotti").innerHTML = html + "</table>";
+  });
+  html += "</table>";
+  document.getElementById("prodotti").innerHTML = html;
+}
+
+ function confermaOrdine() {
+  const nome = document.getElementById("nome").value.trim();
+  if (!nome) return alert("Seleziona il nome della tua famiglia.");
+
+  localStorage.setItem("famiglia", nome);
+
+  const ordine = [];
+  for (let i = 0; i < prodotti.length; i++) {
+    const p = prodotti[i];
+    const inputQty = document.getElementById(`quantita-${i}`);
+    const inputNota = document.getElementById(`nota-${i}`); 
+    
+    if (!inputQty) continue;
+
+    const qty = parseInt(inputQty.value) || 0;
+    const nota = inputNota ? inputNota.value.trim() : ""; 
+
+    if (qty > p.giacenza) {
+      alert(`Attenzione: la giacenza del prodotto "${p.tipo}" è inferiore alla richiesta.`);
+      return;
+    }
+
+    if (qty > 0 && !nota) {
+      alert(`⚠️ È obbligatorio specificare una nota per il prodotto "${p.tipo}".`);
+      return;
+    }
+
+    if (qty > 0) {
+      ordine.push({ 
+        nome, 
+        prodotto: p.tipo, 
+        quantita: qty,
+        nota: nota
+      });
+    }
   }
 
-  function confermaOrdine() {
-    const nome = document.getElementById("nome").value;
-    if (!nome) return alert("Seleziona Famiglia");
-    localStorage.setItem("famiglia", nome);
+  if (ordine.length === 0) return alert("Nessun prodotto selezionato.");
 
-    const ordine = [];
-    prodotti.forEach((p, i) => {
-      const q = parseInt(document.getElementById(`quantita-${i}`)?.value) || 0;
-      const n = document.getElementById(`nota-${i}`).value.trim();
-      if (q > 0) {
-          if (!n) { alert("Inserisci nota per " + p.tipo); return; }
-          ordine.push({ nome, prodotto: p.tipo, quantita: q, nota: n });
+  let riepilogo = `Famiglia: ${nome}\n\n`;
+  ordine.forEach(o => {
+    riepilogo += `- ${o.prodotto}: ${o.quantita} (Nota: ${o.nota})\n`;
+  });
+
+  ordineDaInviare = ordine;
+  document.getElementById("riepilogoModal").innerText = riepilogo;
+  document.getElementById("modal").style.display = "flex";
+}
+
+  function chiudiModal() {
+    document.getElementById("modal").style.display = "none";
+    document.getElementById("messaggioAttesa").style.display = "none";
+  }
+
+  async function inviaOrdine() {
+    const attesa = document.getElementById("messaggioAttesa");
+    attesa.style.display = "block";
+    try {
+      const res = await fetch(scriptUrl, {
+        method: "POST",
+        body: JSON.stringify({ action: "prenota", ordine: ordineDaInviare })
+      });
+      await res.json();
+      alert("✅ Ordine inviato con successo!");
+      chiudiModal();
+      caricaProdotti();
+    } catch (e) {
+      alert("Errore invio ordine: " + e.message);
+    } finally {
+      attesa.style.display = "none";
+    }
+  }
+
+ async function mostraRiepilogoPrenotazioni() {
+    const nominativo = document.getElementById('nome').value.trim();
+    if (!nominativo) return alert("Seleziona prima un nominativo.");
+
+    const spinner = document.getElementById("spinner-riepilogo");
+    const contenuto = document.getElementById("contenuto-riepilogo");
+    contenuto.innerHTML = ""; 
+    spinner.style.display = "block";
+    document.getElementById('modal-riepilogo').style.display = "flex";
+
+    try {
+      const url = scriptUrl + "?action=riepilogo&nominativo=" + encodeURIComponent(nominativo);
+      const res = await fetch(url);
+      const data = await res.json();
+      
+      riepilogoCorrente = data;
+      spinner.style.display = "none";
+      
+      const prenotazioniAttive = data.filter(item => item.valore > 0);
+
+      if (!prenotazioniAttive.length) {
+        contenuto.innerText = `Nessuna prenotazione attiva per ${nominativo}.`;
+        contenuto.innerHTML += `<button onclick="document.getElementById('modal-riepilogo').style.display='none'" style="background-color: #6c757d;">Chiudi</button>`;
+        return;
+      }
+
+      let html = `<p style="font-size: 0.9rem; margin-bottom: 5px;">Riepilogo <strong>${nominativo}</strong>. Annullamenti:</p>`;
+      
+      html += `<table>
+                  <tr>
+                    <th>Prodotto</th>
+                    <th>Pren.</th>
+                    <th>Da Ann.</th>
+                    <th>Nota</th>
+                  </tr>`;
+      
+      prenotazioniAttive.forEach((item, i) => {
+        html += `<tr>
+                   <td>${item.prodotto}</td>
+                   <td><strong>${item.valore}</strong></td>
+                   <td>
+                     <input type="number" id="annulla-${i}" min="0" max="${item.valore}" value="0">
+                   </td>
+                   <td>
+                     <input type="text" id="nota-annulla-${i}" placeholder="Motivo">
+                   </td>
+                 </tr>`;
+      });
+      
+      html += `</table>`;
+      
+      html += `<div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 1rem; flex-wrap: wrap;">`
+      html += `<button id="btnConfermaAnnullamento" onclick="inviaAnnullamento()" style="flex-grow: 1;">Conferma</button>`;
+      html += `<button onclick="mostraDettaglioPerPersone(true)" style="flex-grow: 1; background-color: #0a1a3f;">Dettaglio Persone</button>`;
+      html += `<button onclick="document.getElementById('modal-riepilogo').style.display='none'" style="flex-grow: 1; background-color: #6c757d;">Chiudi</button>`;
+      html += `</div>`;
+
+      contenuto.innerHTML = html;
+
+    } catch (err) {
+      spinner.style.display = "none";
+      contenuto.innerText = "Errore: " + err.message;
+    }
+  }
+
+  async function inviaAnnullamento() {
+    const nome = document.getElementById("nome").value.trim();
+    const btn = document.getElementById("btnConfermaAnnullamento");
+    
+    btn.disabled = true;
+    btn.innerHTML = 'Elaborazione... <span class="spinner"></span>';
+
+    const ordineDiAnnullamento = [];
+    let errore = false;
+
+    const prenotazioniAttive = riepilogoCorrente.filter(item => item.valore > 0);
+
+    prenotazioniAttive.forEach((item, i) => {
+      const inputQty = document.getElementById(`annulla-${i}`);
+      const inputNota = document.getElementById(`nota-annulla-${i}`); 
+
+      if (inputQty) {
+        const qtyDaAnnullare = parseInt(inputQty.value) || 0;
+        const notaAnnullamento = inputNota ? inputNota.value.trim() : "";
+
+        if (qtyDaAnnullare > item.valore) {
+          alert(`Errore: Non puoi annullare ${qtyDaAnnullare} ${item.prodotto}, ne hai prenotati solo ${item.valore}.`);
+          errore = true;
+        }
+        
+        if (qtyDaAnnullare > 0 && !notaAnnullamento) {
+          alert(`⚠️ È obbligatorio specificare una nota per l'annullamento di "${item.prodotto}".`);
+          errore = true;
+        }
+
+        if (qtyDaAnnullare > 0 && !errore) {
+          ordineDiAnnullamento.push({
+            nome: nome,
+            prodotto: item.prodotto,
+            quantita: -qtyDaAnnullare,
+            nota: `Annullato: ${notaAnnullamento}`
+          });
+        }
       }
     });
 
-    if (!ordine.length) return;
-    ordineDaInviare = ordine;
-    document.getElementById("riepilogoModal").innerText = ordine.map(o => `${o.prodotto}: ${o.quantita} (${o.nota})`).join("\n");
-    document.getElementById("modal").style.display = "flex";
-  }
+    if (errore) {
+      btn.disabled = false;
+      btn.innerHTML = 'Conferma';
+      return;
+    }
 
-  function chiudiModal() { document.getElementById("modal").style.display = "none"; }
-
-  async function inviaOrdine() {
-    document.getElementById("messaggioAttesa").style.display = "block";
-    try {
-      await fetch(scriptUrl, { method: "POST", body: JSON.stringify({ action: "prenota", ordine: ordineDaInviare }) });
-      alert("Inviato!");
-      location.reload();
-    } catch (e) { alert(e.message); }
-  }
-
-  async function mostraRiepilogoPrenotazioni() {
-    const nominativo = document.getElementById('nome').value;
-    if (!nominativo) return alert("Seleziona Famiglia");
-    const cont = document.getElementById("contenuto-riepilogo");
-    document.getElementById('modal-riepilogo').style.display = "flex";
-    document.getElementById("spinner-riepilogo").style.display = "block";
-    cont.innerHTML = "";
+    if (ordineDiAnnullamento.length === 0) {
+      alert("Nessuna quantità da annullare inserita.");
+      btn.disabled = false;
+      btn.innerHTML = 'Conferma';
+      return;
+    }
 
     try {
-      const res = await fetch(scriptUrl + "?action=riepilogo&nominativo=" + encodeURIComponent(nominativo));
-      riepilogoCorrente = await res.json();
-      document.getElementById("spinner-riepilogo").style.display = "none";
-      
-      const attivi = riepilogoCorrente.filter(x => x.valore > 0);
-      let html = `<table><tr><th>Prodotto</th><th>Qtà</th><th>Ann.</th></tr>`;
-      attivi.forEach((item, i) => {
-        html += `<tr><td>${item.prodotto}</td><td>${item.valore}</td>
-                 <td><input type="number" id="annulla-${i}" value="0" style="width:40px"></td></tr>`;
+      const res = await fetch(scriptUrl, {
+        method: "POST",
+        body: JSON.stringify({ action: "prenota", ordine: ordineDiAnnullamento })
       });
-      cont.innerHTML = html + `</table>
-        <button class="btn-main" onclick="mostraDettaglioPerPersone(true)">Vedi/Modifica Persone</button>
-        <button class="btn-main" style="background:#6c757d" onclick="document.getElementById('modal-riepilogo').style.display='none'">Chiudi</button>`;
-    } catch (e) { alert(e.message); }
+      await res.json();
+      
+      alert("✅ Annullamento registrato con successo!");
+      
+      document.getElementById('modal-riepilogo').style.display = "none";
+      caricaProdotti(); 
+      
+    } catch (e) {
+      alert("Errore invio annullamento: " + e.message);
+      btn.disabled = false;
+      btn.innerHTML = 'Conferma';
+    }
   }
 
-  async function mostraDettaglioPerPersone(chiudiRiep) {
-    const nom = document.getElementById('nome').value;
-    if (chiudiRiep) document.getElementById('modal-riepilogo').style.display = "none";
-    document.getElementById('modal-dettaglio-persone').style.display = "flex";
-    const cont = document.getElementById("contenuto-dettaglio");
-    cont.innerHTML = "";
-    document.getElementById("spinner-dettaglio").style.display = "block";
+  async function mostraDettaglioPerPersone(chiudiRiepilogo = false) { 
+    const nominativo = document.getElementById('nome').value.trim();
+    if (!nominativo) return alert("Seleziona prima un nominativo.");
+
+    if (chiudiRiepilogo) {
+      document.getElementById('modal-riepilogo').style.display = "none";
+    }
+
+    const spinner = document.getElementById("spinner-dettaglio");
+    const contenuto = document.getElementById("contenuto-dettaglio");
+    const modal = document.getElementById('modal-dettaglio-persone');
+    
+    contenuto.innerHTML = ""; 
+    document.getElementById('pulsanti-dettaglio').style.display = 'flex'; 
+    spinner.style.display = "block";
+    modal.style.display = "flex";
 
     try {
-        const res = await fetch(scriptUrl + "?action=dettaglio&nominativo=" + encodeURIComponent(nom));
-        const dati = await res.json();
-        document.getElementById("spinner-dettaglio").style.display = "none";
+        const url = scriptUrl + "?action=dettaglio&nominativo=" + encodeURIComponent(nominativo);
+        const res = await fetch(url);
+        const dettaglioFamiglia = await res.json();
+        
+        spinner.style.display = "none";
+        
+        if (!dettaglioFamiglia.length) {
+            contenuto.innerText = `Nessun ordine consolidato trovato.`;
+            document.getElementById('pulsanti-dettaglio').style.display = 'none';
+            contenuto.innerHTML += `<br><button onclick="document.getElementById('modal-dettaglio-persone').style.display='none'" style="margin-top:10px; background-color: #6c757d;">Chiudi</button>`;
+            return;
+        }
 
-        dati.forEach((persona, pIdx) => {
-            let html = `<div class="dettaglio-persona">
-                <h5>👤 ${persona.nominativo}</h5>
-                <table style="font-size:0.8rem">`;
+        let html = `<p style="margin-top: 0.2rem; font-size: 0.85em; color: #6c757d;">*Usa valori positivi per **Aggiungere**, negativi per **Sottrarre**.</p>`;
+
+        dettaglioFamiglia.forEach((persona, pIdx) => {
+            const nomePersona = persona.nominativo;
+            html += `<div class="dettaglio-persona">`;
+            html += `<h5>👤 ${nomePersona}</h5>`;
+            
+            html += `<table>
+                        <tr>
+                            <th>Prodotto</th>
+                            <th>Att.</th>
+                            <th>Mod (+/-)</th>
+                        </tr>`;
+            
             Object.keys(persona).forEach(key => {
                 if (key !== 'nominativo') {
-                    const idInput = `modifica-${pIdx}-${key.replace(/\s/g, '_')}`;
-                    html += `<tr><td>${key}</td><td><b>${persona[key]}</b></td>
-                        <td><div style="display:flex; gap:5px; align-items:center;">
-                            <button type="button" class="btn-control btn-minus" onclick="cambiaValore('${idInput}', -1, ${persona[key]})">-</button>
-                            <input type="number" id="${idInput}" value="0" readonly data-prodotto="${key}" data-persona="${persona.nominativo}" style="width:30px; text-align:center; border:none; background:transparent; font-weight:bold;">
-                            <button type="button" class="btn-control btn-plus" onclick="cambiaValore('${idInput}', 1)">+</button>
-                        </div></td></tr>`;
+                    html += `<tr>
+                            <td>${key}</td>
+                            <td><strong>${persona[key]}</strong></td>
+                            <td>
+                                <input type="number" id="modifica-${pIdx}-${key.replace(/\s/g, '_')}" 
+                                       min="-${persona[key]}" value="0" 
+                                       data-prodotto="${key}"
+                                       data-persona="${nomePersona}" />
+                            </td>
+                         </tr>`;
                 }
             });
-            cont.innerHTML += html + `</table></div>`;
+            html += `</table></div>`;
         });
-    } catch (e) { alert(e.message); }
+        
+        contenuto.innerHTML = html;
+
+    } catch (err) {
+        spinner.style.display = "none";
+        contenuto.innerText = "Errore: " + err.message;
+    }
   }
 
-  function cambiaValore(id, delta, maxSott) {
-    const input = document.getElementById(id);
-    let val = parseInt(input.value) || 0;
-    let nuovo = val + delta;
-    if (delta < 0 && maxSott !== null && Math.abs(nuovo) > maxSott) return;
-    input.value = nuovo;
-    input.style.color = nuovo > 0 ? "#2e7d32" : (nuovo < 0 ? "#d32f2f" : "black");
-  }
+async function inviaModificaDettaglio() {
+    const nomeFamiglia = document.getElementById("nome").value.trim();
+    const btn = document.getElementById("btnApplicaModifiche");
+    
+    const modificheDaInviare = [];
+    let modificheTotali = 0;
 
-  async function inviaModificaDettaglio() {
-    const fam = document.getElementById("nome").value;
-    const modifiche = [];
     document.querySelectorAll('[id^="modifica-"]').forEach(input => {
-        const v = parseInt(input.value) || 0;
-        if (v !== 0) {
-            modifiche.push({
-                nome: fam, 
-                prodotto: input.getAttribute('data-prodotto'),
-                quantita: v,
-                nota: `${v > 0 ? 'Aggiunta' : 'Sottrazione'} da ${input.getAttribute('data-persona')} (Dettaglio)`
+        const modifica = parseInt(input.value) || 0;
+        
+        if (modifica !== 0) {
+            const prodotto = input.getAttribute('data-prodotto');
+            const nomePersona = input.getAttribute('data-persona');
+            
+            const azione = modifica > 0 ? "Aggiunta" : "Sottrazione";
+            const notaAutomatica = `${azione} da ${nomePersona} (Dettaglio)`;
+
+            modificheDaInviare.push({
+                nome: nomeFamiglia,
+                prodotto: prodotto,
+                quantita: modifica,
+                nota: notaAutomatica
             });
+            modificheTotali++;
         }
     });
 
-    if (!modifiche.length) return alert("Nessuna modifica");
-    if (!confirm("Confermi le modifiche?")) return;
+    if (modificheTotali === 0) {
+        alert("Nessuna modifica inserita.");
+        return;
+    }
+    
+    if (!confirm(`Sei sicuro di voler inviare ${modificheTotali} modifiche?`)) return;
+
+    btn.disabled = true;
+    btn.innerHTML = 'Invio... <span class="spinner"></span>';
 
     try {
-        await fetch(scriptUrl, { method: "POST", body: JSON.stringify({ action: "prenota", ordine: modifiche }) });
-        alert("Fatto!");
-        location.reload();
-    } catch (e) { alert(e.message); }
+        const res = await fetch(scriptUrl, {
+            method: "POST",
+            body: JSON.stringify({ action: "prenota", ordine: modificheDaInviare })
+        });
+        await res.json();
+        
+        alert("✅ Modifiche registrate!");
+        
+        document.getElementById('modal-dettaglio-persone').style.display = "none";
+        caricaProdotti(); 
+        
+    } catch (e) {
+        alert("Errore invio modifiche: " + e.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Applica Modifiche';
+    }
   }
-
+  
   window.onload = caricaProdotti;
 </script>
 </body>
